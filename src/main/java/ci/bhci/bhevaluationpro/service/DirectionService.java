@@ -4,13 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
 import ci.bhci.bhevaluationpro.domain.Direction;
 import ci.bhci.bhevaluationpro.domain.dto.DirectionDto;
-import ci.bhci.bhevaluationpro.util.PaginationMod;
 
 /**
  * Service interface for the Direction entity that extends the AbstractBaseService
@@ -25,6 +20,4 @@ public interface DirectionService extends AbstractBaseService<Direction, Long> {
 	Optional<DirectionDto> getById(Long id) throws SQLException;
 
 	List<DirectionDto> getAll() throws SQLException; 
-	
-//	PaginationMod<DirectionDto> getAllDirections(Pageable pageable);
 }

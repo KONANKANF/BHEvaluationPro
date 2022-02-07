@@ -7,6 +7,7 @@ public class CustomDataNotFoundException extends RuntimeException {
 
 	@SuppressWarnings("unused")
 	private String message;
+	@SuppressWarnings("unused")
 	private Response response;
 
 	public CustomDataNotFoundException() {
