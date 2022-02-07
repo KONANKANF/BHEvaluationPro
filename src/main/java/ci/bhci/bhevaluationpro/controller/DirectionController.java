@@ -1,30 +1,22 @@
 package ci.bhci.bhevaluationpro.controller;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.sql.SQLException;
-import java.sql.SQLSyntaxErrorException;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ci.bhci.bhevaluationpro.domain.Direction;
 import ci.bhci.bhevaluationpro.domain.dto.DirectionDto;
 import ci.bhci.bhevaluationpro.exception.CustomDataNotFoundException;
 import ci.bhci.bhevaluationpro.exception.CustomErrorException;
 import ci.bhci.bhevaluationpro.service.DirectionService;
 import ci.bhci.bhevaluationpro.service.impl.DirectionServiceImpl;
 import ci.bhci.bhevaluationpro.util.ApiPaths;
-import ci.bhci.bhevaluationpro.util.PaginationMod;
 import ci.bhci.bhevaluationpro.util.Response;
 import lombok.extern.log4j.Log4j2;
 
