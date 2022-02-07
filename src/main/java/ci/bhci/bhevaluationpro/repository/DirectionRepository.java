@@ -19,9 +19,6 @@ import ci.bhci.bhevaluationpro.domain.Direction;
 @Repository
 public interface DirectionRepository extends AbstractBaseRepository<Direction, Long> {
 
-	@Query("select case when count(d)> 0 then true else false end from Direction d where lower(libelle_direction) like lower(:libelle) and lower(code_direction) like lower(:code) and isactive= 1 and is_deleted is null")
-	boolean existDirection(@Param("code") String codeDirection, @Param("libelle") String libelleDirection);
-
 	@Query("select d from Direction d where id_direction = :id and isactive = 1 and is_deleted is null")
 	Optional<Direction> findById(@Param("id") Long directionId);
 	
@@ -30,4 +27,7 @@ public interface DirectionRepository extends AbstractBaseRepository<Direction, L
 
 	@Query("select d from Direction d where isactive = 1 and is_deleted is null")
 	List<Direction> findAll();
+	
+	@Query("select case when count(d)> 0 then true else false end from Direction d where lower(libelle_direction) like lower(:libelle) and lower(code_direction) like lower(:code) and isactive= 1 and is_deleted is null")
+	boolean existDirection(@Param("code") String codeDirection, @Param("libelle") String libelleDirection);
 }

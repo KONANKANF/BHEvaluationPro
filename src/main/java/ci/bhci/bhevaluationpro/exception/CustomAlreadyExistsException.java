@@ -1,18 +1,17 @@
 package ci.bhci.bhevaluationpro.exception;
 
-
 @SuppressWarnings("serial")
-public class CustomAlreadyExistsException extends RuntimeException{
+public class CustomAlreadyExistsException extends RuntimeException {
 
-	 @SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private String message;
-	
-		public CustomAlreadyExistsException(String message){
+
+	public CustomAlreadyExistsException(String message) {
 		super(message);
-        this.message = message;
-    }
-	
+		this.message = message;
+	}
+
 	public CustomAlreadyExistsException() {
 		super("Record already exists!");
-    }
+	}
 }

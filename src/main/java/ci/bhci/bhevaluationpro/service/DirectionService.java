@@ -19,5 +19,7 @@ public interface DirectionService extends AbstractBaseService<Direction, Long> {
 
 	Optional<DirectionDto> getById(Long id) throws SQLException;
 
-	List<DirectionDto> getAll() throws SQLException; 
+	List<DirectionDto> getAll() throws SQLException;
+
+	DirectionDto addEntity(DirectionDto entityDto) throws SQLException; 
 }

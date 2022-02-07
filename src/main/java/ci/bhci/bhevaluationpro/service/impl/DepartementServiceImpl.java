@@ -35,14 +35,6 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 	@Transactional
 	public Departement save(Departement departement) {
 		log.info("-- Begin add new Departement --");
-//		List<Departement> departements = new ArrayList<Departement>();
-//		if (departement.getDepartements().size() > 0) {
-//			direction.getDepartements().stream().forEach(departement -> {
-//				departement.setDirection(direction);
-//				departements.add(departement);
-//			});
-//			departement.setDepartements(departements);
-//		}
 		Departement newDepartement = this.repository.save(departement);
 		log.info("-- End add new Departement --");
 		return newDepartement;

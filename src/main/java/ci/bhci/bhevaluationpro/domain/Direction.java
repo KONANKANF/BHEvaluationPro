@@ -3,6 +3,7 @@ package ci.bhci.bhevaluationpro.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -46,6 +47,8 @@ public class Direction extends AbstractBaseEntity {
 	private String codeDirection;
 	@Column(name = "libelle_direction")
 	private String libelleDirection;
-	@OneToMany(mappedBy = "direction")
+	@OneToMany(mappedBy = "direction", cascade = CascadeType.ALL)
 	private List<Departement> departements = new ArrayList<>();
+	@OneToMany(mappedBy = "direction", cascade = CascadeType.ALL)
+	private List<Fonction> fonctions = new ArrayList<>();
 }
