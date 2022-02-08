@@ -15,11 +15,16 @@ import ci.bhci.bhevaluationpro.domain.dto.DirectionDto;
  */
 public interface DirectionService extends AbstractBaseService<Direction, Long> {
 	
-	boolean existDirection(String codeDirection, String libelleDirection);
+	boolean existDirection(String codeDirection, String libelleDirection) throws SQLException;
 
 	Optional<DirectionDto> getById(Long id) throws SQLException;
 
 	List<DirectionDto> getAll() throws SQLException;
 
-	DirectionDto addEntity(DirectionDto entityDto) throws SQLException; 
+	DirectionDto addEntity(DirectionDto entityDto) throws SQLException;
+
+	DirectionDto updateEntity(DirectionDto entityDto, Long id) throws SQLException;
+
+	void delete(DirectionDto directionDto, Long id) throws SQLException;
+
 }

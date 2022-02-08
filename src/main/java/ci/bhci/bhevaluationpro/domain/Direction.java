@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,8 +48,19 @@ public class Direction extends AbstractBaseEntity {
 	private String codeDirection;
 	@Column(name = "libelle_direction")
 	private String libelleDirection;
-	@OneToMany(mappedBy = "direction", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "direction", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Departement> departements = new ArrayList<>();
-	@OneToMany(mappedBy = "direction", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "direction", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Fonction> fonctions = new ArrayList<>();
+	
+	public void setDepartements(List<Departement> departements) {
+		this.departements = departements;
+	}
+	public void addDepartement(Departement departement) {
+		this.departements.add(departement);
+		this.setDepartements(this.departements);
+	}
+	public void removeDepartement(Departement departement) {
+		this.departements.remove(departement);
+	}
 }

@@ -35,12 +35,12 @@ public abstract class AbstractBaseRepositoryImpl<T extends AbstractBaseEntity, I
     }
     
     @Override
-    public T save(T entity) {
+    public T save(T entity) throws SQLException {
         return (T) abstractBaseRepository.save(entity);
     }
 
     @Override
-    public List<T> findAll() {
+    public List<T> findAll() throws SQLException {
         return abstractBaseRepository.findAll();
     }
 
@@ -50,7 +50,7 @@ public abstract class AbstractBaseRepositoryImpl<T extends AbstractBaseEntity, I
     }
 
     @Override
-    public T update(T entity) {
+    public T update(T entity) throws SQLException {
         return (T) abstractBaseRepository.save(entity);
     }
 
@@ -65,12 +65,12 @@ public abstract class AbstractBaseRepositoryImpl<T extends AbstractBaseEntity, I
     }
 
     @Override
-    public void delete(T entity) {
+    public void delete(T entity) throws SQLException {
         abstractBaseRepository.delete(entity);
     }
 
     @Override
-    public void deleteById(ID entityId) {
+    public void deleteById(ID entityId) throws SQLException {
         abstractBaseRepository.deleteById(entityId);
     }
 

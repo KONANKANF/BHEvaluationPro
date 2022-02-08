@@ -7,9 +7,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,24 +55,24 @@ public class DirectionController {
 	 * @return {@code ResponseEntity}
 	 */
 	@GetMapping
-	public ResponseEntity<Response> getDirections() {	
-		log.info("Initializing DirectionService : getDirections");	
+	public ResponseEntity<Response> getDirections() {
+		log.info("Initializing DirectionService : getDirections");
 		try {
 			List<DirectionDto> entityDtos = this.service.getAll();
 			Response response = new Response();
-			if(entityDtos.size() > 0) {				
+			if (entityDtos.size() > 0) {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());
 				response.setMessage("Opération terminée avec succès!");
 				response.setData(entityDtos);
-				log.info("Une liste de une ou plusieurs Direction trouvée."+"\r\n"+"Traitement effectué avec succès!");
+				log.info("Une liste de une ou plusieurs Direction trouvée." + "\r\n"
+						+ "Traitement effectué avec succès!");
 				return new ResponseEntity<>(response, HttpStatus.OK);
-			}else {
+			} else {
 				response.setCode(HttpStatus.NOT_FOUND.value());
 				response.setStatus(HttpStatus.NOT_FOUND.name());
-				response.setMessage(
-						new CustomDataNotFoundException("Auncune Direction trouvée !").getMessage());
+				response.setMessage(new CustomDataNotFoundException("Auncune Direction trouvée !").getMessage());
 				log.warn("Auncune Direction ID trouvée !");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
@@ -78,21 +80,22 @@ public class DirectionController {
 			log.error("Error -> " + e.getMessage());
 			throw new CustomErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Error -> " + e.getMessage());
 		}
-		
+
 	}
 
 	/**
 	 * Get Method to find entity Direction By Id
+	 * 
 	 * @param id
 	 * @return DirectionDto{@code ResponseEntity}
 	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<Response> getById(@PathVariable(value = "id", required = true) Long id) {
-		log.info("Initializing DirectionService : getById");		
+		log.info("Initializing DirectionService : getById");
 		try {
 			Response response = new Response();
 			DirectionDto entityDto = this.service.getById(id).orElse(null);
-			if (entityDto == null) {				
+			if (entityDto == null) {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.NOT_FOUND.value());
 				response.setStatus(HttpStatus.NOT_FOUND.name());
@@ -106,7 +109,7 @@ public class DirectionController {
 				response.setStatus(HttpStatus.OK.name());
 				response.setMessage("Opération terminée avec succès!");
 				response.setData(entityDto);
-				log.info("Direction ID :" + id + " trouvée."+"\r\n"+"Traitement effectué avec succès!");
+				log.info("Direction ID :" + id + " trouvée." + "\r\n" + "Traitement effectué avec succès!");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			}
 		} catch (Exception e) {
@@ -116,13 +119,14 @@ public class DirectionController {
 	}
 
 	/**
-	 * Post Method to save new entity DIrection
+	 * Post Method to persist new entity DIrection
+	 * 
 	 * @param entityDto
 	 * @return {@code ResponseEntity}
 	 */
 	@PostMapping
-	public ResponseEntity<Response> addEntity(@RequestBody DirectionDto entityDto){
-		log.info("Initializing DirectionService : addEntity");	
+	public ResponseEntity<Response> addEntity(@RequestBody DirectionDto entityDto) {
+		log.info("Initializing DirectionService : addEntity");
 		try {
 			Response response = new Response();
 			if (!this.service.existDirection(entityDto.getCodeDirection(), entityDto.getLibelleDirection())) {
@@ -130,15 +134,18 @@ public class DirectionController {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());
-				response.setMessage("Opération terminée avec succès!");
+				response.setMessage("Opération effectuée avec succès!");
 				response.setData(entityDto);
+				log.info("-- New entity Direction added successfully --");
 				return new ResponseEntity<>(response, HttpStatus.OK);
-			}else {
+			} else {
 				log.info("-- Entity Direction already exists --");
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.ALREADY_REPORTED.value());
 				response.setStatus(HttpStatus.ALREADY_REPORTED.name());
-				response.setMessage(new CustomAlreadyExistsException("Un enregistrement existe déjà avec les mêmes informations.").getMessage());
+				response.setMessage(
+						new CustomAlreadyExistsException("Un enregistrement existe déjà avec les mêmes informations.")
+								.getMessage());
 				return new ResponseEntity<>(response, HttpStatus.ALREADY_REPORTED);
 			}
 		} catch (Exception e) {
@@ -146,7 +153,62 @@ public class DirectionController {
 			throw new CustomErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Error -> " + e.getMessage());
 		}
 	}
-	
+
+	@PutMapping("/{id}")
+	public ResponseEntity<Response> editEntity(@RequestBody DirectionDto entityDto, @PathVariable("id") Long id) {
+		try {
+			Response response = new Response();
+			if (this.service.findById(id).isPresent()) {
+				entityDto = this.service.updateEntity(entityDto, id);
+				response.setTimestamp(new Date());
+				response.setCode(HttpStatus.OK.value());
+				response.setStatus(HttpStatus.OK.name());
+				response.setMessage("Traitement effectué avec succès!");
+				response.setData(entityDto);
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			} else {
+				response.setTimestamp(new Date());
+				response.setCode(HttpStatus.NOT_FOUND.value());
+				response.setStatus(HttpStatus.NOT_FOUND.name());
+				response.setMessage(
+						new CustomDataNotFoundException("Auncune Direction ID :" + id + " trouvée !").getMessage());
+				log.warn("Auncune Direction ID :" + id + " trouvée !");
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			}
+
+		} catch (Exception e) {
+			log.error("Error -> " + e.getMessage());
+			throw new CustomErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Error -> " + e.getMessage());
+		}
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Response> deleteEntity(@RequestBody DirectionDto entityDto, @PathVariable("id") Long id) {
+		try {
+			Response response = new Response();
+			if (this.service.findById(id).isPresent()) {
+				this.service.delete(entityDto, id);
+				response.setTimestamp(new Date());
+				response.setCode(HttpStatus.OK.value());
+				response.setStatus(HttpStatus.OK.name());
+				response.setMessage("Traitement effectué avec succès!");
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			} else {
+				response.setTimestamp(new Date());
+				response.setCode(HttpStatus.NOT_FOUND.value());
+				response.setStatus(HttpStatus.NOT_FOUND.name());
+				response.setMessage(
+						new CustomDataNotFoundException("Auncune Direction ID :" + id + " trouvée !").getMessage());
+				log.warn("Auncune Direction ID :" + entityDto.getId() + " trouvée !");
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			}
+
+		} catch (Exception e) {
+			log.error("Error -> " + e.getMessage());
+			throw new CustomErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Error -> " + e.getMessage());
+		}
+	}
+
 	// PaginationMod<T>: create response object for pagination
 //	@GetMapping("/pagination")
 //	public ResponseEntity<PaginationMod<DirectionDto>> getAllPageable(Pageable pageable){
