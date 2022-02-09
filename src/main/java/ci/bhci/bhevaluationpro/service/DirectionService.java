@@ -17,7 +17,7 @@ public interface DirectionService extends AbstractBaseService<Direction, Long> {
 	
 	boolean existDirection(String codeDirection, String libelleDirection) throws SQLException;
 
-	Optional<DirectionDto> getById(Long id) throws SQLException;
+	Optional<Direction> getById(Long id) throws SQLException;
 
 	List<DirectionDto> getAll() throws SQLException;
 

@@ -1,7 +1,6 @@
 package ci.bhci.bhevaluationpro.domain;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -60,10 +59,10 @@ public class Fonction extends AbstractBaseEntity {
 //	private List<Fonction> collaborateurs = new ArrayList<>();
 //	@OneToMany(mappedBy = "fonction", cascade = CascadeType.ALL)
 	private List<PersonnelPoste> personnelPostes = new ArrayList<>();
-	@Column(name = "debut_poste")
-	private Date debut_poste;
-	@Column(name = "fin_poste")
-	private Date fin_poste;
 	@Column(name = "libelle_fonction")
 	private String libelleFonction;
+//	@Column(name = "debut_poste")
+//	private Date debutPoste;
+//	@Column(name = "fin_poste")
+//	private Date finPoste;
 }

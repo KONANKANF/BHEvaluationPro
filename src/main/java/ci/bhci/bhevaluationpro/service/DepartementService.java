@@ -14,13 +14,13 @@ import ci.bhci.bhevaluationpro.domain.dto.DepartementDto;
  */
 public interface DepartementService extends AbstractBaseService<Departement, Long> {
 
-//	List<Departement> findByDirection(Long directionId);
+	List<Departement> findByDirection(Long directionId);
 	
 	boolean existDepartement(Long directionId, String libelleDepartement);
 
 	List<DepartementDto> getAll();
 
-	Optional<DepartementDto> getById(Long id);
+	Optional<Departement> getById(Long id);
 
 	DepartementDto addEntity(DepartementDto entityDto);
 

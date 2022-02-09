@@ -20,15 +20,15 @@ import ci.bhci.bhevaluationpro.domain.Fonction;
 public interface FonctionRepository extends AbstractBaseRepository<Fonction, Long> {
 
 	@Query("select case when count(f)> 0 then true else false end from Fonction f "
-			+ "where (id_service = :departementId or id_service is null) and (manger_id_fonction = :managerIdFonction or manger_id_fonction is  null) "
+			+ "where (id_service = :departementId or id_service is null) and (manager_id_fonction = :managerIdFonction or manager_id_fonction is  null) "
 			+ "and (id_direction = :directionId and lower(libelle_fonction) like lower(:libelle) and isactive= 1 and is_deleted is null)")
-	boolean existFonction(@Param("directionId") Long directionId, @Param("directionId") Long departementId,
+	boolean existFonction(@Param("directionId") Long directionId, @Param("departementId") Long departementId,
 			@Param("managerIdFonction") Long managerIdFonction, @Param("libelle") String libelleFonction);
 
-	@Query("select f from Fonction f where id_type_evaluation = :statutId and isactive = 1 and is_deleted is null")
-	Optional<Fonction> findById(@Param("statutId") Long fonctionId);
+	@Query("select f from Fonction f where id_fonction = :fonctionId and isactive = 1 and is_deleted is null")
+	Optional<Fonction> findById(@Param("fonctionId") Long fonctionId);
 
-	@Query("select f from Fonction f where lower(libelle_type_evaluation) like lower(:libelle) and isactive= 1 and is_deleted is null")
+	@Query("select f from Fonction f where lower(libelle_fonction) like lower(:libelle) and isactive= 1 and is_deleted is null")
 	Optional<Fonction> findByLibelleFonctionn(@Param("libelle") String libelleFonction);
 
 	@Query("select f from Fonction f where isactive = 1 and is_deleted is null")
@@ -37,7 +37,7 @@ public interface FonctionRepository extends AbstractBaseRepository<Fonction, Lon
 	@Query("select f from Fonction f where manager_id_fonction = :managerIdFonction and isactive= 1 and is_deleted is null")
 	List<Fonction> findByManager(@Param("managerIdFonction") Long managerIdFonction);
 
-	@Query("select f from Fonction f where id_departement = :departementeId and isactive= 1 and is_deleted is null")
+	@Query("select f from Fonction f where id_service = :departementeId and isactive= 1 and is_deleted is null")
 	List<Fonction> findByDepartement(@Param("departementeId") Long departementeId);
 
 	@Query("select f from Fonction f where id_direction = :directionId and isactive= 1 and is_deleted is null")

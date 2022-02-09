@@ -36,6 +36,7 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 
 	private final DirectionRepository repository;
 	private final DepartementRepository departementRepository;
+
 	private final Transformer<DirectionDto, Direction> transformer = new Transformer<DirectionDto, Direction>(
 			DirectionDto.class, Direction.class);
 
@@ -62,7 +63,7 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 					childEntity.setDirection(entity);
 					children.add(childEntity);
 				});
-				entity.setModifiedAt(LocalDateTime.now());
+//				entity.setModifiedAt(LocalDateTime.now());
 				entity.setDepartements(children);
 			}
 			Direction newEntity = this.repository.save(entity);
@@ -117,8 +118,7 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 			throw new CustomErrorException(e.getMessage());
 		}
 	}
-	
-	
+
 	@Override
 	@Transactional
 	public void delete(DirectionDto directionDto, Long id) throws SQLException {
@@ -127,7 +127,7 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 			Direction entity = this.findById(directionDto.getId()).orElse(null);
 			if (entity != null) {
 				entity.getDepartements().stream().forEach(departement -> {
-					Departement childEntity = this.departementRepository.findById(departement.getId()).get();
+					Departement childEntity = this.departementRepository.getById(departement.getId());
 					childEntity.setIsDeleted(true);
 					childEntity.setDeletedAt(LocalDateTime.now());
 					childEntity.setDeletedBy(directionDto.getDeletedBy());
@@ -141,18 +141,18 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 				this.repository.save(entity);
 				log.info("-- Delete entity Departement : End successfully --");
 			}
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			log.error("SQLErreur -> " + e.getMessage());
 			throw new CustomErrorException(e.getMessage());
 		}
 	}
 
 	@Override
-	public Optional<DirectionDto> getById(Long id) throws SQLException {
+	public Optional<Direction> getById(Long id) throws SQLException {
 		log.info("-- Find entity Direction by Id : Begin --");
 		try {
 			log.info("-- Entity Direction Id : " + id + " found successfully --");
-			return Optional.of(this.transformer.convertToDto(this.repository.findById(id)));
+			return this.repository.findById(id);
 		} catch (Exception e) {
 			log.error("SQLErreur -> " + e.getMessage());
 			throw new CustomErrorException(e.getMessage());
@@ -178,7 +178,7 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 		} catch (Exception e) {
 			log.error("SQLErreur -> " + e.getMessage());
 			throw new CustomErrorException(e.getMessage());
-		}		
+		}
 	}
 
 //	@SuppressWarnings("unchecked")

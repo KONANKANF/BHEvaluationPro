@@ -52,15 +52,17 @@ public class Direction extends AbstractBaseEntity {
 	private List<Departement> departements = new ArrayList<>();
 	@OneToMany(mappedBy = "direction", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Fonction> fonctions = new ArrayList<>();
-	
-	public void setDepartements(List<Departement> departements) {
-		this.departements = departements;
-	}
+
+//	public void setDepartements(List<Departement> departements) {
+//		this.departements = departements;
+//	}
+
 	public void addDepartement(Departement departement) {
 		this.departements.add(departement);
 		this.setDepartements(this.departements);
 	}
-	public void removeDepartement(Departement departement) {
-		this.departements.remove(departement);
-	}
+
+//	public void removeDepartement(Departement departement) {
+//		this.departements.remove(departement);
+//	}
 }

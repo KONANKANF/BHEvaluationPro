@@ -25,4 +25,5 @@ public interface PersonnelRepository extends AbstractBaseRepository<Personnel, L
 	
 	@Query("select p from Personnel p where id_personnel_poste = :personnelPosteId and isactive= 1 and is_deleted is null")
 	List<Personnel> findByPersonnelPostes(@Param("personnelPosteId") Long personnelPosteId);
+	
 }

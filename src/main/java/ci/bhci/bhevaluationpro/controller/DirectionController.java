@@ -2,6 +2,7 @@ package ci.bhci.bhevaluationpro.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ci.bhci.bhevaluationpro.domain.Direction;
 import ci.bhci.bhevaluationpro.domain.dto.DirectionDto;
 import ci.bhci.bhevaluationpro.exception.CustomAlreadyExistsException;
 import ci.bhci.bhevaluationpro.exception.CustomDataNotFoundException;
 import ci.bhci.bhevaluationpro.exception.CustomErrorException;
 import ci.bhci.bhevaluationpro.service.DirectionService;
+import ci.bhci.bhevaluationpro.transformer.Transformer;
 import ci.bhci.bhevaluationpro.util.ApiPaths;
 import ci.bhci.bhevaluationpro.util.Response;
 import lombok.extern.log4j.Log4j2;
@@ -38,6 +41,9 @@ import lombok.extern.log4j.Log4j2;
 public class DirectionController {
 
 	private final DirectionService service;
+	
+	private final Transformer<DirectionDto, Direction> transformer = new Transformer<DirectionDto, Direction>(
+			DirectionDto.class, Direction.class);
 
 	@Autowired
 	public DirectionController(DirectionService service) {
@@ -88,9 +94,9 @@ public class DirectionController {
 	public ResponseEntity<Response> getById(@PathVariable(value = "id", required = true) Long id) {
 		log.info("Initializing DirectionService : getById");
 		try {
-			Response response = new Response();
-			DirectionDto entityDto = this.service.getById(id).orElse(null);
-			if (entityDto == null) {
+			Response response = new Response();		
+			Optional<Direction> foundEntity = this.service.getById(id);
+			if (!foundEntity.isPresent()) {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.NOT_FOUND.value());
 				response.setStatus(HttpStatus.NOT_FOUND.name());
@@ -103,7 +109,7 @@ public class DirectionController {
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());
 				response.setMessage("Opération terminée avec succès!");
-				response.setData(entityDto);
+				response.setData(this.transformer.convertToDto(foundEntity.get()));
 				log.info("Direction ID :" + id + " trouvée." + "\r\n" + "Traitement effectué avec succès!");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			}

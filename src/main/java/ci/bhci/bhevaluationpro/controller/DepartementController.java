@@ -2,6 +2,7 @@ package ci.bhci.bhevaluationpro.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ci.bhci.bhevaluationpro.domain.Departement;
 import ci.bhci.bhevaluationpro.domain.dto.DepartementDto;
 import ci.bhci.bhevaluationpro.exception.CustomAlreadyExistsException;
 import ci.bhci.bhevaluationpro.exception.CustomDataNotFoundException;
 import ci.bhci.bhevaluationpro.exception.CustomErrorException;
 import ci.bhci.bhevaluationpro.service.DepartementService;
+import ci.bhci.bhevaluationpro.transformer.Transformer;
 import ci.bhci.bhevaluationpro.util.ApiPaths;
 import ci.bhci.bhevaluationpro.util.Response;
 import lombok.extern.log4j.Log4j2;
@@ -33,11 +36,14 @@ import lombok.extern.log4j.Log4j2;
 
 @RestController
 //@CrossOrigin
-@RequestMapping(ApiPaths.Entity.BPA_DIRECTION)
+@RequestMapping(ApiPaths.Entity.BPA_DEPARTEMENT)
 @Log4j2
 public class DepartementController {
 
 	private final DepartementService service;
+
+	private final Transformer<DepartementDto, Departement> transformer = new Transformer<DepartementDto, Departement>(
+			DepartementDto.class, Departement.class);
 
 	@Autowired
 	public DepartementController(DepartementService service) {
@@ -61,14 +67,14 @@ public class DepartementController {
 				response.setStatus(HttpStatus.OK.name());
 				response.setMessage("Opération terminée avec succès!");
 				response.setData(entityDtos);
-				log.info("Une liste de une ou plusieurs Departement trouvée." + "\r\n"
+				log.info("Une liste d'un ou plusieurs Departement trouvée." + "\r\n"
 						+ "Traitement effectué avec succès!");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			} else {
 				response.setCode(HttpStatus.NOT_FOUND.value());
 				response.setStatus(HttpStatus.NOT_FOUND.name());
 				response.setMessage(new CustomDataNotFoundException("Auncune Departement trouvée !").getMessage());
-				log.warn("Auncune Departement ID trouvée !");
+				log.warn("Auncun Departement ID trouvé !");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
 		} catch (Exception e) {
@@ -89,8 +95,8 @@ public class DepartementController {
 		log.info("Initializing DepartementService : getById");
 		try {
 			Response response = new Response();
-			DepartementDto entityDto = this.service.getById(id).orElse(null);
-			if (entityDto == null) {
+			Optional<Departement> foundEntity = this.service.getById(id);
+			if (!foundEntity.isPresent()) {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.NOT_FOUND.value());
 				response.setStatus(HttpStatus.NOT_FOUND.name());
@@ -103,7 +109,7 @@ public class DepartementController {
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());
 				response.setMessage("Opération terminée avec succès!");
-				response.setData(entityDto);
+				response.setData(this.transformer.convertToDto(foundEntity.get()));
 				log.info("Departement ID :" + id + " trouvée." + "\r\n" + "Traitement effectué avec succès!");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			}
@@ -133,7 +139,7 @@ public class DepartementController {
 				response.setData(entityDto);
 				log.info("-- Enregistrement de Departement effectué avec succès --");
 				return new ResponseEntity<>(response, HttpStatus.OK);
-			} else {				
+			} else {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.ALREADY_REPORTED.value());
 				response.setStatus(HttpStatus.ALREADY_REPORTED.name());
