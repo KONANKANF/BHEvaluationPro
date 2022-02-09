@@ -8337,3 +8337,151 @@ ci.bhci.bhevaluationpro.controller.DirectionController#editEntity(DirectionDto, 
 2022-02-08 15:38:41.969  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
 2022-02-08 15:38:41.972  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Started BhEvaluationProApplication in 4.758 seconds (JVM running for 13065.344)
 2022-02-08 15:38:41.973  INFO 22980 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2022-02-08 15:42:15.315  INFO 22980 --- [Thread-208] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:42:15.316  INFO 22980 --- [Thread-208] com.zaxxer.hikari.HikariDataSource       : HikariPool-52 - Shutdown initiated...
+2022-02-08 15:42:15.325  INFO 22980 --- [Thread-208] com.zaxxer.hikari.HikariDataSource       : HikariPool-52 - Shutdown completed.
+2022-02-08 15:42:15.632  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Starting BhEvaluationProApplication using Java 1.8.0_241 on ABJL00100012 with PID 22980 (D:\env\src\workspace-spring-tool-suite\BHEvaluationPro\target\classes started by kyao in D:\env\src\workspace-spring-tool-suite\BHEvaluationPro)
+2022-02-08 15:42:15.632  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : No active profile set, falling back to default profiles: default
+2022-02-08 15:42:15.848  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-02-08 15:42:15.880  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 31 ms. Found 8 JPA repository interfaces.
+2022-02-08 15:42:15.923  INFO 22980 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$60ddcca6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-02-08 15:42:15.923  INFO 22980 --- [restartedMain] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2022-02-08 15:42:16.064  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2022-02-08 15:42:16.065  INFO 22980 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-02-08 15:42:16.065  INFO 22980 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-02-08 15:42:16.087  INFO 22980 --- [restartedMain] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2022-02-08 15:42:16.087  INFO 22980 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 454 ms
+2022-02-08 15:42:16.118  INFO 22980 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-02-08 15:42:16.122  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-53 - Starting...
+2022-02-08 15:42:16.134  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-53 - Start completed.
+2022-02-08 15:42:16.135  INFO 22980 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2022-02-08 15:42:18.420  INFO 22980 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-02-08 15:42:18.420  INFO 22980 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:42:18.729  WARN 22980 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-02-08 15:42:18.918  INFO 22980 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2022-02-08 15:42:18.932  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2022-02-08 15:42:18.935  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Started BhEvaluationProApplication in 3.32 seconds (JVM running for 13282.307)
+2022-02-08 15:42:18.937  INFO 22980 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2022-02-08 15:42:40.386  INFO 22980 --- [Thread-212] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:42:40.389  INFO 22980 --- [Thread-212] com.zaxxer.hikari.HikariDataSource       : HikariPool-53 - Shutdown initiated...
+2022-02-08 15:42:40.406  INFO 22980 --- [Thread-212] com.zaxxer.hikari.HikariDataSource       : HikariPool-53 - Shutdown completed.
+2022-02-08 15:42:40.679  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Starting BhEvaluationProApplication using Java 1.8.0_241 on ABJL00100012 with PID 22980 (D:\env\src\workspace-spring-tool-suite\BHEvaluationPro\target\classes started by kyao in D:\env\src\workspace-spring-tool-suite\BHEvaluationPro)
+2022-02-08 15:42:40.679  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : No active profile set, falling back to default profiles: default
+2022-02-08 15:42:40.841  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-02-08 15:42:40.877  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 35 ms. Found 8 JPA repository interfaces.
+2022-02-08 15:42:40.929  INFO 22980 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$60ddcca6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-02-08 15:42:40.930  INFO 22980 --- [restartedMain] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2022-02-08 15:42:40.973  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2022-02-08 15:42:40.973  INFO 22980 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-02-08 15:42:40.973  INFO 22980 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-02-08 15:42:41.041  INFO 22980 --- [restartedMain] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2022-02-08 15:42:41.041  INFO 22980 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 360 ms
+2022-02-08 15:42:41.084  INFO 22980 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-02-08 15:42:41.088  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-54 - Starting...
+2022-02-08 15:42:41.100  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-54 - Start completed.
+2022-02-08 15:42:41.100  INFO 22980 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2022-02-08 15:42:44.593  INFO 22980 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-02-08 15:42:44.593  INFO 22980 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:42:44.891  WARN 22980 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-02-08 15:42:45.044  INFO 22980 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2022-02-08 15:42:45.060  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2022-02-08 15:42:45.065  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Started BhEvaluationProApplication in 4.402 seconds (JVM running for 13308.437)
+2022-02-08 15:42:45.067  INFO 22980 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2022-02-08 15:43:41.437  INFO 22980 --- [Thread-216] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:43:41.437  INFO 22980 --- [Thread-216] com.zaxxer.hikari.HikariDataSource       : HikariPool-54 - Shutdown initiated...
+2022-02-08 15:43:41.444  INFO 22980 --- [Thread-216] com.zaxxer.hikari.HikariDataSource       : HikariPool-54 - Shutdown completed.
+2022-02-08 15:43:49.096  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Starting BhEvaluationProApplication using Java 1.8.0_241 on ABJL00100012 with PID 22980 (D:\env\src\workspace-spring-tool-suite\BHEvaluationPro\target\classes started by kyao in D:\env\src\workspace-spring-tool-suite\BHEvaluationPro)
+2022-02-08 15:43:49.096  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : No active profile set, falling back to default profiles: default
+2022-02-08 15:43:49.285  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-02-08 15:43:49.317  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 31 ms. Found 8 JPA repository interfaces.
+2022-02-08 15:43:49.357  INFO 22980 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$60ddcca6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-02-08 15:43:49.358  INFO 22980 --- [restartedMain] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2022-02-08 15:43:49.392  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2022-02-08 15:43:49.393  INFO 22980 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-02-08 15:43:49.393  INFO 22980 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-02-08 15:43:49.801  INFO 22980 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2022-02-08 15:43:49.801  INFO 22980 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 703 ms
+2022-02-08 15:43:49.843  INFO 22980 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-02-08 15:43:49.846  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-55 - Starting...
+2022-02-08 15:43:49.857  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-55 - Start completed.
+2022-02-08 15:43:49.857  INFO 22980 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2022-02-08 15:43:53.467  INFO 22980 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-02-08 15:43:53.467  INFO 22980 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:43:53.784  WARN 22980 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-02-08 15:43:53.946  INFO 22980 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2022-02-08 15:43:53.957  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2022-02-08 15:43:53.960  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Started BhEvaluationProApplication in 4.889 seconds (JVM running for 13377.333)
+2022-02-08 15:43:53.962  INFO 22980 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2022-02-08 15:45:36.594  INFO 22980 --- [Thread-220] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:45:36.596  INFO 22980 --- [Thread-220] com.zaxxer.hikari.HikariDataSource       : HikariPool-55 - Shutdown initiated...
+2022-02-08 15:45:36.603  INFO 22980 --- [Thread-220] com.zaxxer.hikari.HikariDataSource       : HikariPool-55 - Shutdown completed.
+2022-02-08 15:45:37.059  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Starting BhEvaluationProApplication using Java 1.8.0_241 on ABJL00100012 with PID 22980 (D:\env\src\workspace-spring-tool-suite\BHEvaluationPro\target\classes started by kyao in D:\env\src\workspace-spring-tool-suite\BHEvaluationPro)
+2022-02-08 15:45:37.059  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : No active profile set, falling back to default profiles: default
+2022-02-08 15:45:37.580  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-02-08 15:45:37.581  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 0 ms. Found 0 JPA repository interfaces.
+2022-02-08 15:45:37.736  INFO 22980 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$60ddcca6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-02-08 15:45:37.736  INFO 22980 --- [restartedMain] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2022-02-08 15:45:37.893  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2022-02-08 15:45:37.894  INFO 22980 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-02-08 15:45:37.895  INFO 22980 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-02-08 15:45:37.955  INFO 22980 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2022-02-08 15:45:37.955  INFO 22980 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 893 ms
+2022-02-08 15:45:38.007  INFO 22980 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-02-08 15:45:38.012  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-56 - Starting...
+2022-02-08 15:45:38.028  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-56 - Start completed.
+2022-02-08 15:45:38.028  INFO 22980 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2022-02-08 15:45:38.141  INFO 22980 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-02-08 15:45:38.142  INFO 22980 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:45:38.174  WARN 22980 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-02-08 15:45:38.432  INFO 22980 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2022-02-08 15:45:38.443  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2022-02-08 15:45:38.449  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Started BhEvaluationProApplication in 1.43 seconds (JVM running for 13481.822)
+2022-02-08 15:45:38.451  INFO 22980 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2022-02-08 15:46:03.202  INFO 22980 --- [Thread-230] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:46:03.203  INFO 22980 --- [Thread-230] com.zaxxer.hikari.HikariDataSource       : HikariPool-56 - Shutdown initiated...
+2022-02-08 15:46:03.207  INFO 22980 --- [Thread-230] com.zaxxer.hikari.HikariDataSource       : HikariPool-56 - Shutdown completed.
+2022-02-08 15:46:03.421  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Starting BhEvaluationProApplication using Java 1.8.0_241 on ABJL00100012 with PID 22980 (D:\env\src\workspace-spring-tool-suite\BHEvaluationPro\target\classes started by kyao in D:\env\src\workspace-spring-tool-suite\BHEvaluationPro)
+2022-02-08 15:46:03.421  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : No active profile set, falling back to default profiles: default
+2022-02-08 15:46:04.635  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-02-08 15:46:04.667  INFO 22980 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 31 ms. Found 8 JPA repository interfaces.
+2022-02-08 15:46:04.726  INFO 22980 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$60ddcca6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-02-08 15:46:04.727  INFO 22980 --- [restartedMain] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2022-02-08 15:46:04.792  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2022-02-08 15:46:04.792  INFO 22980 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2022-02-08 15:46:04.792  INFO 22980 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.56]
+2022-02-08 15:46:04.816  INFO 22980 --- [restartedMain] o.a.c.c.C.[Tomcat-3].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2022-02-08 15:46:04.816  INFO 22980 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1392 ms
+2022-02-08 15:46:04.855  INFO 22980 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-02-08 15:46:04.859  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-57 - Starting...
+2022-02-08 15:46:04.897  INFO 22980 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-57 - Start completed.
+2022-02-08 15:46:04.897  INFO 22980 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2022-02-08 15:46:17.872  INFO 22980 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-02-08 15:46:17.872  INFO 22980 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:46:18.205  WARN 22980 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-02-08 15:46:18.353  INFO 22980 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2022-02-08 15:46:18.365  INFO 22980 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2022-02-08 15:46:18.369  INFO 22980 --- [restartedMain] c.b.b.BhEvaluationProApplication         : Started BhEvaluationProApplication in 14.977 seconds (JVM running for 13521.742)
+2022-02-08 15:46:18.370  INFO 22980 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2022-02-08 15:46:28.701  INFO 10888 --- [main] c.b.b.BhEvaluationProApplicationTests    : Starting BhEvaluationProApplicationTests using Java 1.8.0_241 on ABJL00100012 with PID 10888 (started by kyao in D:\env\src\workspace-spring-tool-suite\BHEvaluationPro)
+2022-02-08 15:46:28.709  INFO 10888 --- [main] c.b.b.BhEvaluationProApplicationTests    : No active profile set, falling back to default profiles: default
+2022-02-08 15:46:33.722  INFO 10888 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2022-02-08 15:46:34.247  INFO 10888 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 502 ms. Found 8 JPA repository interfaces.
+2022-02-08 15:46:35.928  INFO 10888 --- [main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$EnhancerBySpringCGLIB$$e1e2007] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2022-02-08 15:46:36.025  INFO 10888 --- [main] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2022-02-08 15:46:36.882  INFO 10888 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2022-02-08 15:46:37.409  INFO 10888 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.4.Final
+2022-02-08 15:46:37.945  INFO 10888 --- [main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2022-02-08 15:46:38.656  INFO 10888 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-02-08 15:46:40.400  INFO 10888 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2022-02-08 15:46:40.506  INFO 10888 --- [main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2022-02-08 15:46:45.968  INFO 10888 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2022-02-08 15:46:45.990  INFO 10888 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:46:49.473  WARN 10888 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2022-02-08 15:46:54.032  INFO 10888 --- [main] c.b.b.BhEvaluationProApplicationTests    : Started BhEvaluationProApplicationTests in 27.109 seconds (JVM running for 31.344)
+2022-02-08 15:46:54.536  INFO 10888 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:46:54.541  INFO 10888 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2022-02-08 15:46:54.559  INFO 10888 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2022-02-08 15:51:09.834  INFO 22980 --- [RMI TCP Connection(232)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2022-02-08 15:51:10.022  INFO 22980 --- [RMI TCP Connection(232)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2022-02-08 15:51:10.023  INFO 22980 --- [RMI TCP Connection(232)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-57 - Shutdown initiated...
+2022-02-08 15:51:10.031  INFO 22980 --- [RMI TCP Connection(232)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-57 - Shutdown completed.

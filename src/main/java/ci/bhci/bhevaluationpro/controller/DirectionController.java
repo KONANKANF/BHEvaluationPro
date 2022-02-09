@@ -1,6 +1,5 @@
 package ci.bhci.bhevaluationpro.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ci.bhci.bhevaluationpro.domain.Departement;
-import ci.bhci.bhevaluationpro.domain.Direction;
 import ci.bhci.bhevaluationpro.domain.dto.DirectionDto;
 import ci.bhci.bhevaluationpro.exception.CustomAlreadyExistsException;
 import ci.bhci.bhevaluationpro.exception.CustomDataNotFoundException;
@@ -41,12 +38,10 @@ import lombok.extern.log4j.Log4j2;
 public class DirectionController {
 
 	private final DirectionService service;
-//	private final Response response;
 
 	@Autowired
 	public DirectionController(DirectionService service) {
 		this.service = service;
-//		this.response = response;
 	}
 
 	/**
@@ -136,16 +131,16 @@ public class DirectionController {
 				response.setStatus(HttpStatus.OK.name());
 				response.setMessage("Opération effectuée avec succès!");
 				response.setData(entityDto);
-				log.info("-- New entity Direction added successfully --");
+				log.info("-- Enregistrement de Direction effectué avec succès  --");
 				return new ResponseEntity<>(response, HttpStatus.OK);
-			} else {
-				log.info("-- Entity Direction already exists --");
+			} else {				
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.ALREADY_REPORTED.value());
 				response.setStatus(HttpStatus.ALREADY_REPORTED.name());
 				response.setMessage(
 						new CustomAlreadyExistsException("Un enregistrement existe déjà avec les mêmes informations.")
 								.getMessage());
+				log.warn("-- Un enregistrement de Direction existe déjà --");
 				return new ResponseEntity<>(response, HttpStatus.ALREADY_REPORTED);
 			}
 		} catch (Exception e) {
@@ -165,6 +160,7 @@ public class DirectionController {
 				response.setStatus(HttpStatus.OK.name());
 				response.setMessage("Traitement effectué avec succès!");
 				response.setData(entityDto);
+				log.info("-- Modification de Direction effectuée avec succès --");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			} else {
 				response.setTimestamp(new Date());
@@ -192,6 +188,7 @@ public class DirectionController {
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());
 				response.setMessage("Traitement effectué avec succès!");
+				log.info("-- Suppression de Direction effectuée avec succès --");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			} else {
 				response.setTimestamp(new Date());

@@ -22,6 +22,6 @@ import lombok.Setter;
 public class DepartementDto extends AbstractBaseEntityDto {
 	private Long id;	
 	private Long directionId;
-	private String libelleService;
+	private String libelleDepartement;
 	private List<FonctionDto> fonctionDto = new ArrayList<>();
 }

@@ -47,19 +47,23 @@ public class Fonction extends AbstractBaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_fonction")
 	private Long id;
-	@ManyToOne(optional = true, fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_direction")
 	private Direction direction;
-	@ManyToOne(optional = true, fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_service")
 	private Departement departement;
-	@ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "manager_id_fonction")
 	private Fonction managerIdFonction;
 	@OneToMany(mappedBy = "fonction", cascade = CascadeType.ALL)
+//	private List<Fonction> collaborateurs = new ArrayList<>();
+//	@OneToMany(mappedBy = "fonction", cascade = CascadeType.ALL)
 	private List<PersonnelPoste> personnelPostes = new ArrayList<>();
 	@Column(name = "debut_poste")
 	private Date debut_poste;
 	@Column(name = "fin_poste")
 	private Date fin_poste;
+	@Column(name = "libelle_fonction")
+	private String libelleFonction;
 }

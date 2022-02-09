@@ -52,22 +52,22 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 	@Override
 	@Transactional
 	public DirectionDto addEntity(DirectionDto directionDto) throws SQLException {
-		log.info("-- Add new entity Direction : Begin --");
+		log.info("-- Add entity Direction : Begin --");
 		try {
-			List<Departement> departements = new ArrayList<Departement>();
-			Direction direction = this.transformer.convertToEntity(directionDto);
+			List<Departement> children = new ArrayList<Departement>();
+			Direction entity = this.transformer.convertToEntity(directionDto);
 			if (directionDto.getDepartementDto().size() > 0) {
 				directionDto.getDepartementDto().stream().forEach(departementDto -> {
-					Departement departement = this.departementTransformer.convertToEntity(departementDto);
-					departement.setDirection(direction);
-					departements.add(departement);
+					Departement childEntity = this.departementTransformer.convertToEntity(departementDto);
+					childEntity.setDirection(entity);
+					children.add(childEntity);
 				});
-				direction.setModifiedAt(LocalDateTime.now());
-				direction.setDepartements(departements);
+				entity.setModifiedAt(LocalDateTime.now());
+				entity.setDepartements(children);
 			}
-			Direction newDirection = this.repository.save(direction);
-			log.info("-- Add new entity Direction : End successfully --");
-			return this.transformer.convertToDto(newDirection);
+			Direction newEntity = this.repository.save(entity);
+			log.info("-- Add entity Direction : End successfully --");
+			return this.transformer.convertToDto(newEntity);
 		} catch (Exception e) {
 			log.error("SQLErreur -> " + e.getMessage());
 			throw new CustomErrorException(e.getMessage());
@@ -77,41 +77,41 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 	@Override
 	@Transactional
 	public DirectionDto updateEntity(DirectionDto directionDto, Long id) throws SQLException {
-		log.info("-- Edite entity Direction : Begin --");
+		log.info("-- Update entity Direction : Begin --");
 		try {
-			Direction direction = this.findById(directionDto.getId()).orElse(null);
+			Direction entity = this.findById(directionDto.getId()).orElse(null);
 			if (directionDto.getDepartementDto().size() > 0) {
 				directionDto.getDepartementDto().stream().forEach(departementDto -> {
-					if (!this.departementRepository.existDepartement(id, departementDto.getLibelleService())) {
-						Departement newEntity = new Departement();
-						newEntity.setCreatedAt(LocalDateTime.now());
-						newEntity.setCreatedBy(directionDto.getModifiedBy());
-						newEntity.setLibelleService(departementDto.getLibelleService());
-						newEntity.setIsActive(departementDto.getIsActive());
-						newEntity.setDirection(direction);
-						direction.addDepartement(newEntity);
+					if (!this.departementRepository.existDepartement(id, departementDto.getLibelleDepartement())) {
+						Departement childEntity = new Departement();
+						childEntity.setCreatedAt(LocalDateTime.now());
+						childEntity.setCreatedBy(directionDto.getModifiedBy());
+						childEntity.setLibelleDepartement(departementDto.getLibelleDepartement());
+						childEntity.setIsActive(departementDto.getIsActive());
+						childEntity.setDirection(entity);
+						entity.addDepartement(childEntity);
 						log.info("-- New entity Departement added --");
 					} else {
 						if (this.departementRepository.findById(departementDto.getId()).isPresent()) {
-							Departement entity = this.departementRepository.findById(departementDto.getId()).get();
-							entity.setModifiedAt(LocalDateTime.now());
-							entity.setModifiedBy(directionDto.getModifiedBy());
-							entity.setLibelleService(departementDto.getLibelleService());
-							entity.setIsActive(departementDto.getIsActive());
-							entity.setDirection(direction);
-							log.info("-- Entity Departement edited --");
+							Departement childEntity = this.departementRepository.findById(departementDto.getId()).get();
+							childEntity.setModifiedAt(LocalDateTime.now());
+							childEntity.setModifiedBy(directionDto.getModifiedBy());
+							childEntity.setLibelleDepartement(departementDto.getLibelleDepartement());
+							childEntity.setIsActive(departementDto.getIsActive());
+							childEntity.setDirection(entity);
+							log.info("-- Entity Departement updated --");
 						}
 					}
 				});
 			}
-			direction.setModifiedBy(directionDto.getModifiedBy());
-			direction.setModifiedAt(LocalDateTime.now());
-			direction.setCodeDirection(directionDto.getCodeDirection());
-			direction.setLibelleDirection(directionDto.getLibelleDirection());
-			direction.setIsActive(directionDto.getIsActive());
-			Direction newDirection = this.repository.save(direction);
-			log.info("-- Edite entity Direction : End successfully --");
-			return this.transformer.convertToDto(newDirection);
+			entity.setModifiedBy(directionDto.getModifiedBy());
+			entity.setModifiedAt(LocalDateTime.now());
+			entity.setCodeDirection(directionDto.getCodeDirection());
+			entity.setLibelleDirection(directionDto.getLibelleDirection());
+			entity.setIsActive(directionDto.getIsActive());
+			Direction editedEntity = this.repository.save(entity);
+			log.info("-- Update entity Direction : End successfully --");
+			return this.transformer.convertToDto(editedEntity);
 		} catch (SQLException e) {
 			log.error("SQLErreur -> " + e.getMessage());
 			throw new CustomErrorException(e.getMessage());
@@ -120,25 +120,26 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 	
 	
 	@Override
+	@Transactional
 	public void delete(DirectionDto directionDto, Long id) throws SQLException {
-		log.info("-- Edite entity Direction : Begin --");
+		log.info("-- Delete entity Direction : Begin --");
 		try {
-			Direction direction = this.findById(directionDto.getId()).orElse(null);
-			if (direction != null) {
-				direction.getDepartements().stream().forEach(departement -> {
-					Departement findDepartement = this.departementRepository.findById(departement.getId()).get();
-					findDepartement.setIsDeleted(true);
-					findDepartement.setDeletedAt(LocalDateTime.now());
-					findDepartement.setDeletedBy(directionDto.getDeletedBy());
-					findDepartement.setIsActive(false);
+			Direction entity = this.findById(directionDto.getId()).orElse(null);
+			if (entity != null) {
+				entity.getDepartements().stream().forEach(departement -> {
+					Departement childEntity = this.departementRepository.findById(departement.getId()).get();
+					childEntity.setIsDeleted(true);
+					childEntity.setDeletedAt(LocalDateTime.now());
+					childEntity.setDeletedBy(directionDto.getDeletedBy());
+					childEntity.setIsActive(false);
 					log.info("-- Entity Departement deleted --");
 				});
-				direction.setIsDeleted(true);
-				direction.setDeletedAt(LocalDateTime.now());
-				direction.setDeletedBy(directionDto.getDeletedBy());
-				direction.setIsActive(false);
-				this.repository.save(direction);
-				log.info("-- Edit existing entity Departement --");
+				entity.setIsDeleted(true);
+				entity.setDeletedAt(LocalDateTime.now());
+				entity.setDeletedBy(directionDto.getDeletedBy());
+				entity.setIsActive(false);
+				this.repository.save(entity);
+				log.info("-- Delete entity Departement : End successfully --");
 			}
 		}catch(SQLException e) {
 			log.error("SQLErreur -> " + e.getMessage());
