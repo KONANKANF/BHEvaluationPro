@@ -21,7 +21,10 @@ import ci.bhci.bhevaluationpro.domain.dto.FonctionDto;
 import ci.bhci.bhevaluationpro.exception.CustomAlreadyExistsException;
 import ci.bhci.bhevaluationpro.exception.CustomDataNotFoundException;
 import ci.bhci.bhevaluationpro.exception.CustomErrorException;
+import ci.bhci.bhevaluationpro.service.DepartementService;
+import ci.bhci.bhevaluationpro.service.DirectionService;
 import ci.bhci.bhevaluationpro.service.FonctionService;
+import ci.bhci.bhevaluationpro.service.PersonnelPosteService;
 import ci.bhci.bhevaluationpro.transformer.Transformer;
 import ci.bhci.bhevaluationpro.util.ApiPaths;
 import ci.bhci.bhevaluationpro.util.Response;
@@ -41,13 +44,20 @@ import lombok.extern.log4j.Log4j2;
 public class FonctionController {
 
 	private final FonctionService service;
+	private final DirectionService directionService;
+	private final DepartementService departementService;
+	private final PersonnelPosteService personnelPosteService;
 
 	private final Transformer<FonctionDto, Fonction> transformer = new Transformer<FonctionDto, Fonction>(
 			FonctionDto.class, Fonction.class);
 
 	@Autowired
-	public FonctionController(FonctionService service) {
+	public FonctionController(FonctionService service, DirectionService directionService,
+			DepartementService departementService, PersonnelPosteService personnelPosteService) {
 		this.service = service;
+		this.directionService = directionService;
+		this.departementService = departementService;
+		this.personnelPosteService = personnelPosteService;
 	}
 
 	/**
@@ -67,8 +77,8 @@ public class FonctionController {
 				response.setStatus(HttpStatus.OK.name());
 				response.setMessage("Opération terminée avec succès!");
 				response.setData(entityDtos);
-				log.info("Une liste d'une ou plusieurs Fonction trouvée." + "\r\n"
-						+ "Traitement effectué avec succès!");
+				log.info(
+						"Une liste d'une ou plusieurs Fonction trouvée." + "\r\n" + "Traitement effectué avec succès!");
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			} else {
 				response.setCode(HttpStatus.NOT_FOUND.value());
@@ -123,6 +133,8 @@ public class FonctionController {
 	 * Post Method to persist new entity DIrection
 	 * 
 	 * @param entityDto
+	 * @return 
+	 * @return 
 	 * @return {@code ResponseEntity}
 	 */
 	@PostMapping
@@ -130,15 +142,47 @@ public class FonctionController {
 		log.info("Initializing FonctionService : addEntity");
 		try {
 			Response response = new Response();
-			if (!this.service.existFonction(entityDto.getDirectionId(), null, null, entityDto.getLibelleFonction())) {
-				entityDto = this.service.addEntity(entityDto);
-				response.setTimestamp(new Date());
-				response.setCode(HttpStatus.OK.value());
-				response.setStatus(HttpStatus.OK.name());
-				response.setMessage("Opération effectuée avec succès!");
-				response.setData(entityDto);
-				log.info("-- Enregistrement de Fonction effectué avec succès --");
-				return new ResponseEntity<>(response, HttpStatus.OK);
+			if (!this.service.existFonction(entityDto.getIdDirection(), entityDto.getIdDepartement(),
+					entityDto.getManagerIdFonction(), entityDto.getLibelleFonction())) {
+				if (this.directionService.getById(entityDto.getIdDirection()).isPresent()
+						&& (entityDto.getIdDepartement() == null || (entityDto.getIdDepartement() != null
+								&& this.departementService.getById(entityDto.getIdDepartement()).isPresent()))
+						&& (entityDto.getManagerIdFonction() == null || (entityDto.getManagerIdFonction() != null
+								&& this.service.getById(entityDto.getManagerIdFonction()).isPresent()))) {
+					if (entityDto.getPersonnelPosteDto().size() > 0) {
+						entityDto.getPersonnelPosteDto().stream().forEach(element -> {
+							if (!this.personnelPosteService.existPersonnelPoste(element.getId(),
+									element.getIdFonction())) {
+								response.setTimestamp(new Date());
+								response.setCode(HttpStatus.NOT_FOUND.value());
+								response.setStatus(HttpStatus.NOT_FOUND.name());
+								new CustomAlreadyExistsException(
+										"Les informations (Direction, Departement ou Manager) fournies ne sont pas correctes.")
+												.getMessage();
+								return;
+							}
+						});
+					}
+					entityDto = this.service.addEntity(entityDto);
+					response.setTimestamp(new Date());
+					response.setCode(HttpStatus.OK.value());
+					response.setStatus(HttpStatus.OK.name());
+					response.setMessage("Opération effectuée avec succès!");
+					response.setData(entityDto);
+					log.info("-- Enregistrement de Fonction effectué avec succès --");
+					return new ResponseEntity<>(response, HttpStatus.OK);
+				} else {
+					entityDto = this.service.addEntity(entityDto);
+					response.setTimestamp(new Date());
+					response.setCode(HttpStatus.NOT_FOUND.value());
+					response.setStatus(HttpStatus.NOT_FOUND.name());
+					response.setMessage(new CustomAlreadyExistsException(
+							"Les informations (Direction, Departement ou Manager) fournies ne sont pas correctes.")
+									.getMessage());
+					response.setData(entityDto);
+					log.info("-- Echec de l'enregistrement de Fonction. Les données se sont pas correctes --");
+					return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+				}
 			} else {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.ALREADY_REPORTED.value());

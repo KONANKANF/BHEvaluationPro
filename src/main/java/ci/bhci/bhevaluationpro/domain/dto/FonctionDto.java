@@ -22,8 +22,8 @@ import lombok.Setter;
 public class FonctionDto extends AbstractBaseEntityDto {
 	private Long id;
 	private String libelleFonction;
-	private Long directionId;
-	private Long departementId;
+	private Long idDirection;
+	private Long idDepartement;
 	private Long managerIdFonction;
 //	private List<FonctionDto> collabotateurDto = new ArrayList<>(); 
 	private List<PersonnelPosteDto> personnelPosteDto = new ArrayList<>();

@@ -1,5 +1,6 @@
 package ci.bhci.bhevaluationpro.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,20 +15,20 @@ import ci.bhci.bhevaluationpro.domain.dto.FonctionDto;
  */
 public interface FonctionService extends AbstractBaseService<Fonction, Long> {
 
-	List<Fonction> findByDepartement(Long departementId);
+	List<Fonction> findByDepartement(Long departementId) throws SQLException;
 
-	List<Fonction> findByDirection(Long directionId);
+	List<Fonction> findByDirection(Long directionId) throws SQLException;
 
-	boolean existFonction(Long directionId, Long departementId, Long managerIdFonction, String libelleFonction);
+	boolean existFonction(Long directionId, Long departementId, Long managerIdFonction, String libelleFonction) throws SQLException;
 
-	List<FonctionDto> getAll();
+	List<FonctionDto> getAll() throws SQLException;
 
-	Optional<Fonction> getById(Long id);
+	Optional<Fonction> getById(Long id) throws SQLException;
 
-	FonctionDto addEntity(FonctionDto entityDto);
+	FonctionDto addEntity(FonctionDto entityDto) throws SQLException;
 
-	FonctionDto updateEntity(FonctionDto entityDto, Long id);
+	FonctionDto updateEntity(FonctionDto entityDto, Long id) throws SQLException;
 
-	void delete(FonctionDto entityDto, Long id);
+	void delete(FonctionDto entityDto, Long id) throws SQLException;
 
 }

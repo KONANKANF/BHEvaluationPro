@@ -85,6 +85,6 @@ public class PersonnelPosteServiceImpl extends AbstractBaseRepositoryImpl<Person
 
 	@Override
 	public boolean existPersonnelPoste(Long personnelId, Long fonctionId) {
-		return this.repository.existPersonnelPosteQuery(personnelId, fonctionId);
+		return this.repository.existPersonnelPoste(personnelId, fonctionId);
 	}
 }

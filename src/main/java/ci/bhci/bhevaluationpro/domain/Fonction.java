@@ -55,14 +55,14 @@ public class Fonction extends AbstractBaseEntity {
 	@ManyToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "manager_id_fonction")
 	private Fonction managerIdFonction;
-	@OneToMany(mappedBy = "fonction", cascade = CascadeType.ALL)
-//	private List<Fonction> collaborateurs = new ArrayList<>();
 //	@OneToMany(mappedBy = "fonction", cascade = CascadeType.ALL)
+//	private List<Fonction> collaborateurs = new ArrayList<>();
+	@OneToMany(mappedBy = "fonction", cascade = CascadeType.ALL)
 	private List<PersonnelPoste> personnelPostes = new ArrayList<>();
 	@Column(name = "libelle_fonction")
 	private String libelleFonction;
-//	@Column(name = "debut_poste")
-//	private Date debutPoste;
-//	@Column(name = "fin_poste")
-//	private Date finPoste;
+	
+	public void addFonction(PersonnelPoste childEntity) {
+		this.personnelPostes.add(childEntity);
+	}
 }

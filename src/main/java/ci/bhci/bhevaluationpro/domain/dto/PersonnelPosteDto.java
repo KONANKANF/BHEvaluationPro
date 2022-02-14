@@ -21,8 +21,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PersonnelPosteDto extends AbstractBaseEntityDto {
 	private Long id;
-	private Long personnelId;
-	private Long fonctionId;
+	private Long idPersonnel;
+	private Long IdFonction;
 	private Date debutPoste;
 	private Date finPoste;
 }

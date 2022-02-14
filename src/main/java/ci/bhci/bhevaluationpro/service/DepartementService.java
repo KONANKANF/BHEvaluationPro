@@ -1,5 +1,6 @@
 package ci.bhci.bhevaluationpro.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,17 +15,17 @@ import ci.bhci.bhevaluationpro.domain.dto.DepartementDto;
  */
 public interface DepartementService extends AbstractBaseService<Departement, Long> {
 
-	List<Departement> findByDirection(Long directionId);
+	List<Departement> findByDirection(Long directionId) throws SQLException;
 	
-	boolean existDepartement(Long directionId, String libelleDepartement);
+	boolean existDepartement(Long directionId, String libelleDepartement) throws SQLException;
 
-	List<DepartementDto> getAll();
+	List<DepartementDto> getAll() throws SQLException;
 
-	Optional<Departement> getById(Long id);
+	Optional<Departement> getById(Long id) throws SQLException;
 
-	DepartementDto addEntity(DepartementDto entityDto);
+	DepartementDto addEntity(DepartementDto entityDto) throws SQLException;
 
-	DepartementDto updateEntity(DepartementDto entityDto, Long id);
+	DepartementDto updateEntity(DepartementDto entityDto, Long id) throws SQLException;
 
-	void delete(DepartementDto entityDto, Long id); 
+	void delete(DepartementDto entityDto, Long id) throws SQLException; 
 }

@@ -1,5 +1,7 @@
 package ci.bhci.bhevaluationpro.service.impl;
 
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import ci.bhci.bhevaluationpro.exception.CustomErrorException;
 import ci.bhci.bhevaluationpro.repository.DepartementRepository;
 import ci.bhci.bhevaluationpro.repository.DirectionRepository;
 import ci.bhci.bhevaluationpro.repository.FonctionRepository;
+import ci.bhci.bhevaluationpro.repository.PersonnelPosteRepository;
 import ci.bhci.bhevaluationpro.repository.PersonnelRepository;
 import ci.bhci.bhevaluationpro.service.FonctionService;
 import ci.bhci.bhevaluationpro.transformer.Transformer;
@@ -41,6 +44,7 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 	private final DirectionRepository directionRepository;
 	private final DepartementRepository departementRepository;
 	private final PersonnelRepository personnelRepository;
+	private final PersonnelPosteRepository personnelPosteRepository;
 
 	private final Transformer<FonctionDto, Fonction> transformer = new Transformer<FonctionDto, Fonction>(
 			FonctionDto.class, Fonction.class);
@@ -50,12 +54,13 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 
 	@Autowired
 	public FonctionServiceImpl(FonctionRepository repository, DirectionRepository directionRepository,
-			PersonnelRepository personnelRepository, DepartementRepository departementRepository) {
+			PersonnelRepository personnelRepository, DepartementRepository departementRepository, PersonnelPosteRepository personnelPosteRepository) {
 		super(repository);
 		this.repository = repository;
 		this.directionRepository = directionRepository;
 		this.departementRepository = departementRepository;
 		this.personnelRepository = personnelRepository;
+		this.personnelPosteRepository = personnelPosteRepository;
 	}
 
 //	@Transactional
@@ -75,13 +80,13 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 //	}
 
 	@Override
-	public List<Fonction> findByDirection(Long directionId) {
+	public List<Fonction> findByDirection(Long directionId) throws SQLException{
 		return this.repository.findByDirection(directionId);
 	}
-
+ 
 	@Override
-	public List<Fonction> findByDepartement(Long departementId) {
-		return this.repository.findByDepartement(departementId);
+	public List<Fonction> findByDepartement(Long departementId) throws SQLException{
+		return this.repository.findByDepartement(departementId) ;
 	}
 
 	@Override
@@ -90,7 +95,7 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 	}
 
 	@Override
-	public List<FonctionDto> getAll() {
+	public List<FonctionDto> getAll() throws SQLException {
 		log.info("-- Get all entities Departement : Begin --");
 		try {
 			log.info("-- All entities Departement get successfully --");
@@ -102,7 +107,7 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 	}
 
 	@Override
-	public Optional<Fonction> getById(Long id) {
+	public Optional<Fonction> getById(Long id) throws SQLException {
 		log.info("-- Find entity Fonction by Id : Begin --");
 		try {
 			log.info("-- Entity Fonction Id : " + id + " found successfully --");
@@ -115,26 +120,30 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 
 	@Override
 	@Transactional
-	public FonctionDto addEntity(FonctionDto entityDto) {
+	public FonctionDto addEntity(FonctionDto entityDto) throws SQLException {
 		log.info("-- Add entity Fonction : Begin --");
 		try {
 			List<PersonnelPoste> children = new ArrayList<PersonnelPoste>();
-			Direction parent = this.directionRepository.getById(entityDto.getDirectionId());
-			Departement parentDep = this.departementRepository.getById(entityDto.getDepartementId());
+			Direction parent = this.directionRepository.getById(entityDto.getIdDirection());
+			Optional<Departement> parentDep = this.departementRepository.findById(entityDto.getIdDepartement());
+			Optional<Fonction> managerEntity = this.repository.findById(entityDto.getManagerIdFonction());
 			Fonction entity = this.transformer.convertToEntity(entityDto);
 			if (entityDto.getPersonnelPosteDto().size() > 0) {
+				
 				entityDto.getPersonnelPosteDto().stream().forEach(element -> {
-					Personnel personnelEntity = this.personnelRepository.getById(element.getPersonnelId());
+					Optional<Personnel> personnelEntity = this.personnelRepository.findById(element.getIdPersonnel());
 					PersonnelPoste childEntity = this.personnelPosteTransformer.convertToEntity(element);
-					childEntity.setPersonnel(personnelEntity);
+					if(personnelEntity.isPresent()) childEntity.setPersonnel(personnelEntity.get());
 					childEntity.setFonction(entity);
 					children.add(childEntity);
 				});
+				
 				entity.setPersonnelPostes(children);
 				log.info("-- Entities PersonnelPoste added --");
 			}
 			entity.setDirection(parent);
-			entity.setDepartement(parentDep);
+			if(parentDep.isPresent()) entity.setDepartement(parentDep.get());
+			if(managerEntity.isPresent()) entity.setManagerIdFonction(managerEntity.get());
 			Fonction newEntity = this.repository.save(entity);
 			log.info("-- Add entity Fonction : End successfully --");
 			return this.transformer.convertToDto(newEntity);
@@ -146,14 +155,65 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 
 	@Override
 	@Transactional
-	public FonctionDto updateEntity(FonctionDto entityDto, Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public FonctionDto updateEntity(FonctionDto entityDto, Long id) throws SQLException {
+		log.info("-- Update entity Fonction : Begin --");
+		try {
+			Direction parent = this.directionRepository.getById(entityDto.getIdDirection());
+			Optional<Departement> parentDep = this.departementRepository.findById(entityDto.getIdDepartement());
+			Optional<Fonction> managerEntity = this.repository.findById(entityDto.getManagerIdFonction());
+			Fonction entity = this.transformer.convertToEntity(entityDto);
+			if (entityDto.getPersonnelPosteDto().size() > 0) {
+				entityDto.getPersonnelPosteDto().stream().forEach(element -> {
+					if (!this.personnelPosteRepository.findById(element.getId()).isPresent()) {
+						Optional<Personnel> personnelEntity = this.personnelRepository.findById(element.getIdPersonnel());
+						PersonnelPoste childEntity = new PersonnelPoste();
+						childEntity.setCreatedAt(LocalDateTime.now());
+						childEntity.setCreatedBy(entityDto.getModifiedBy());
+						childEntity.setDebutPoste(null);
+						childEntity.setFinPoste(null);
+						childEntity.setIsActive(element.getIsActive());
+						childEntity.setFonction(entity);
+						if (personnelEntity.isPresent()) {
+							childEntity.setPersonnel(personnelEntity.get());
+						}
+						entity.addFonction(childEntity);
+						log.info("-- New entity PersonnelPoste added --");
+					} else {
+							Optional<Personnel> personnelEntity = this.personnelRepository.findById(element.getIdPersonnel());
+							PersonnelPoste childEntity = this.personnelPosteTransformer.convertToEntity(element);
+							childEntity.setModifiedAt(LocalDateTime.now());
+							childEntity.setModifiedBy(entityDto.getModifiedBy());
+							childEntity.setDebutPoste(null);
+							childEntity.setFinPoste(null);
+							childEntity.setIsActive(element.getIsActive());
+							childEntity.setFonction(entity);
+							if (personnelEntity.isPresent()) {
+								childEntity.setPersonnel(personnelEntity.get());
+							}
+							log.info("-- Entity PersonnelPoste updated --");
+					}
+				});
+			}
+			entity.setModifiedAt(LocalDateTime.now());
+			entity.setModifiedBy(entityDto.getModifiedBy());			
+			entity.setDirection(parent);
+			entity.setIsActive(entityDto.getIsActive());
+			if(parentDep.isPresent()) entity.setDepartement(parentDep.get());
+			if(managerEntity.isPresent()) entity.setManagerIdFonction(managerEntity.get());
+			entity.setLibelleFonction(entityDto.getLibelleFonction());
+			Fonction editedEntity = this.repository.save(entity);
+			log.info("-- Update entity Fonction : End successfully --");
+			return this.transformer.convertToDto(editedEntity);
+		} catch (Exception e) {
+			log.error("SQLErreur -> " + e.getMessage());
+			throw new CustomErrorException(e.getMessage());
+		}
+
 	}
 
 	@Override
 	@Transactional
-	public void delete(FonctionDto entityDto, Long id) {
+	public void delete(FonctionDto entityDto, Long id) throws SQLException {
 		// TODO Auto-generated method stub
 
 	}

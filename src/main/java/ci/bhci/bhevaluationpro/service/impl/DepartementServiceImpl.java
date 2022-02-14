@@ -34,12 +34,13 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @Log4j2
 @Transactional
-public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departement, Long> implements DepartementService {
+public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departement, Long>
+		implements DepartementService {
 
 	private final DepartementRepository repository;
 	private final DirectionRepository directionRepository;
 	private final FonctionRepository fonctionRepository;
-	
+
 	private final Transformer<FonctionDto, Fonction> fonctionTransformer = new Transformer<FonctionDto, Fonction>(
 			FonctionDto.class, Fonction.class);
 
@@ -47,7 +48,8 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 			DepartementDto.class, Departement.class);
 
 	@Autowired
-	public DepartementServiceImpl(DepartementRepository repository, FonctionRepository fonctionRepository, DirectionRepository directionRepository) {
+	public DepartementServiceImpl(DepartementRepository repository, FonctionRepository fonctionRepository,
+			DirectionRepository directionRepository) {
 		super(repository);
 		this.repository = repository;
 		this.directionRepository = directionRepository;
@@ -55,17 +57,17 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 	}
 
 	@Override
-	public boolean existDepartement(Long directionId, String libelleDepartement) {
+	public boolean existDepartement(Long directionId, String libelleDepartement) throws SQLException {
 		try {
 			return this.repository.existDepartement(directionId, libelleDepartement);
 		} catch (Exception e) {
 			log.error("SQLErreur -> " + e.getMessage());
 			throw new CustomErrorException(e.getMessage());
-		}		
+		}
 	}
 
 	@Override
-	public List<DepartementDto> getAll() {
+	public List<DepartementDto> getAll() throws SQLException {
 		log.info("-- Get all entities Departement : Begin --");
 		try {
 			log.info("-- All entities Departement get successfully --");
@@ -77,7 +79,7 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 	}
 
 	@Override
-	public Optional<Departement> getById(Long id) {
+	public Optional<Departement> getById(Long id) throws SQLException {
 		log.info("-- Find entity Departement by Id : Begin --");
 		try {
 			log.info("-- Entity Departement Id : " + id + " found successfully --");
@@ -90,21 +92,23 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 
 	@Override
 	@Transactional
-	public DepartementDto addEntity(DepartementDto entityDto) {
+	public DepartementDto addEntity(DepartementDto entityDto) throws SQLException {
 		log.info("-- Add entity Departement : Begin --");
 		try {
 			List<Fonction> children = new ArrayList<Fonction>();
-			Direction parent = this.directionRepository.getById(entityDto.getDirectionId());
+			Direction parent = this.directionRepository.getById(entityDto.getIdDirection());
 			Departement entity = this.transformer.convertToEntity(entityDto);
 			if (entityDto.getFonctionDto().size() > 0) {
 				entityDto.getFonctionDto().stream().forEach(element -> {
-					Fonction managerEntity = this.fonctionRepository.getById(element.getId());
+					Optional<Fonction> managerEntity = this.fonctionRepository.findById(element.getManagerIdFonction());
 					Fonction childEntity = this.fonctionTransformer.convertToEntity(element);
 					childEntity.setDepartement(entity);
 					childEntity.setDirection(parent);
-					childEntity.setManagerIdFonction(managerEntity);
+					if (managerEntity.isPresent()) {
+						childEntity.setManagerIdFonction(managerEntity.get());
+					}
 					children.add(childEntity);
-				});				
+				});
 				entity.setFonctions(children);
 				log.info("-- Entities Fonction added --");
 			}
@@ -117,18 +121,19 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 			throw new CustomErrorException(e.getMessage());
 		}
 	}
-	
+
 	@Override
 	@Transactional
-	public DepartementDto updateEntity(DepartementDto entityDto, Long id) {
+	public DepartementDto updateEntity(DepartementDto entityDto, Long id) throws SQLException {
 		log.info("-- Update entity Departement : Begin --");
 		try {
-			Direction parent = this.directionRepository.findById(entityDto.getDirectionId()).get();
+			Direction parent = this.directionRepository.findById(entityDto.getIdDirection()).get();
 			Departement entity = this.findById(entityDto.getId()).orElse(null);
 			if (entityDto.getFonctionDto().size() > 0) {
 				entityDto.getFonctionDto().stream().forEach(element -> {
-					if (!this.fonctionRepository.existFonction(entityDto.getDirectionId(),id, element.getManagerIdFonction(), element.getLibelleFonction())) {
-						Fonction managerEntity = this.fonctionRepository.getById(element.getManagerIdFonction());
+					if (!this.fonctionRepository.findById(element.getId()).isPresent()) {
+						Optional<Fonction> managerEntity = this.fonctionRepository
+								.findById(element.getManagerIdFonction());
 						Fonction childEntity = new Fonction();
 						childEntity.setCreatedAt(LocalDateTime.now());
 						childEntity.setCreatedBy(entityDto.getModifiedBy());
@@ -136,22 +141,25 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 						childEntity.setIsActive(element.getIsActive());
 						childEntity.setDepartement(entity);
 						childEntity.setDirection(parent);
-						childEntity.setManagerIdFonction(managerEntity);
+						if (managerEntity.isPresent()) {
+							childEntity.setManagerIdFonction(managerEntity.get());
+						}
 						entity.addFonction(childEntity);
 						log.info("-- New entity Fonction added --");
 					} else {
-						if (this.fonctionRepository.findById(element.getId()).isPresent()) {
-							Fonction managerEntity = this.fonctionRepository.getById(element.getManagerIdFonction());
-							Fonction childEntity = this.fonctionRepository.getById(element.getId());
-							childEntity.setModifiedAt(LocalDateTime.now());
-							childEntity.setModifiedBy(entityDto.getModifiedBy());
-							childEntity.setLibelleFonction(element.getLibelleFonction());
-							childEntity.setIsActive(element.getIsActive());
-							childEntity.setDepartement(entity);
-							childEntity.setDirection(parent);
-							childEntity.setManagerIdFonction(managerEntity);
-							log.info("-- Entity Fonction updated --");
+						Optional<Fonction> managerEntity = this.fonctionRepository
+								.findById(element.getManagerIdFonction());
+						Fonction childEntity = this.fonctionRepository.getById(element.getId());
+						childEntity.setModifiedAt(LocalDateTime.now());
+						childEntity.setModifiedBy(entityDto.getModifiedBy());
+						childEntity.setLibelleFonction(element.getLibelleFonction());
+						childEntity.setIsActive(element.getIsActive());
+						childEntity.setDepartement(entity);
+						childEntity.setDirection(parent);
+						if (managerEntity.isPresent()) {
+							childEntity.setManagerIdFonction(managerEntity.get());
 						}
+						log.info("-- Entity Fonction updated --");
 					}
 				});
 			}
@@ -171,7 +179,7 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 
 	@Override
 	@Transactional
-	public void delete(DepartementDto entityDto, Long id) {
+	public void delete(DepartementDto entityDto, Long id) throws SQLException {
 		log.info("-- Delete entity Departement : Begin --");
 		try {
 			Departement entity = this.findById(entityDto.getId()).orElse(null);
@@ -191,14 +199,14 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 				this.repository.save(entity);
 				log.info("-- Delete entity Departement : End successfully --");
 			}
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			log.error("SQLErreur -> " + e.getMessage());
 			throw new CustomErrorException(e.getMessage());
 		}
 	}
 
 	@Override
-	public List<Departement> findByDirection(Long directionId) {
+	public List<Departement> findByDirection(Long directionId) throws SQLException {
 		return null;
 	}
 }

@@ -20,7 +20,7 @@ import ci.bhci.bhevaluationpro.domain.Fonction;
 public interface FonctionRepository extends AbstractBaseRepository<Fonction, Long> {
 
 	@Query("select case when count(f)> 0 then true else false end from Fonction f "
-			+ "where (id_service = :departementId or id_service is null) and (manager_id_fonction = :managerIdFonction or manager_id_fonction is  null) "
+			+ "where (id_service is null or id_service = :departementId) and (manager_id_fonction is null or manager_id_fonction = :managerIdFonction) "
 			+ "and (id_direction = :directionId and lower(libelle_fonction) like lower(:libelle) and isactive= 1 and is_deleted is null)")
 	boolean existFonction(@Param("directionId") Long directionId, @Param("departementId") Long departementId,
 			@Param("managerIdFonction") Long managerIdFonction, @Param("libelle") String libelleFonction);

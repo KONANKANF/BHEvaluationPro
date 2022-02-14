@@ -1,5 +1,7 @@
 package ci.bhci.bhevaluationpro.domain;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,7 +51,7 @@ public class PersonnelPoste extends AbstractBaseEntity {
 	@JoinColumn(name = "id_fonction")
 	private Fonction fonction;
 	@Column(name = "debut_poste")
-	private Long debut_poste;
+	private Date debutPoste;
 	@Column(name = "fin_poste")
-	private Long fin_poste;
+	private Date finPoste;
 }

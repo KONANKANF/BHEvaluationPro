@@ -22,6 +22,7 @@ import ci.bhci.bhevaluationpro.exception.CustomAlreadyExistsException;
 import ci.bhci.bhevaluationpro.exception.CustomDataNotFoundException;
 import ci.bhci.bhevaluationpro.exception.CustomErrorException;
 import ci.bhci.bhevaluationpro.service.DepartementService;
+import ci.bhci.bhevaluationpro.service.DirectionService;
 import ci.bhci.bhevaluationpro.transformer.Transformer;
 import ci.bhci.bhevaluationpro.util.ApiPaths;
 import ci.bhci.bhevaluationpro.util.Response;
@@ -41,13 +42,15 @@ import lombok.extern.log4j.Log4j2;
 public class DepartementController {
 
 	private final DepartementService service;
+	private final DirectionService directionService;
 
 	private final Transformer<DepartementDto, Departement> transformer = new Transformer<DepartementDto, Departement>(
 			DepartementDto.class, Departement.class);
 
 	@Autowired
-	public DepartementController(DepartementService service) {
+	public DepartementController(DepartementService service, DirectionService directionService) {
 		this.service = service;
+		this.directionService = directionService;
 	}
 
 	/**
@@ -130,15 +133,26 @@ public class DepartementController {
 		log.info("Initializing DepartementService : addEntity");
 		try {
 			Response response = new Response();
-			if (!this.service.existDepartement(entityDto.getDirectionId(), entityDto.getLibelleDepartement())) {
-				entityDto = this.service.addEntity(entityDto);
-				response.setTimestamp(new Date());
-				response.setCode(HttpStatus.OK.value());
-				response.setStatus(HttpStatus.OK.name());
-				response.setMessage("Opération effectuée avec succès!");
-				response.setData(entityDto);
-				log.info("-- Enregistrement de Departement effectué avec succès --");
-				return new ResponseEntity<>(response, HttpStatus.OK);
+			if (!this.service.existDepartement(entityDto.getIdDirection(), entityDto.getLibelleDepartement())) {
+				if (this.directionService.getById(entityDto.getIdDirection()).isPresent()) {
+					entityDto = this.service.addEntity(entityDto);
+					response.setTimestamp(new Date());
+					response.setCode(HttpStatus.OK.value());
+					response.setStatus(HttpStatus.OK.name());
+					response.setMessage("Opération effectuée avec succès!");
+					response.setData(entityDto);
+					log.info("-- Enregistrement de Departement effectué avec succès --");
+					return new ResponseEntity<>(response, HttpStatus.OK);
+				} else {
+					response.setTimestamp(new Date());
+					response.setCode(HttpStatus.NOT_FOUND.value());
+					response.setStatus(HttpStatus.NOT_FOUND.name());
+					response.setMessage(
+							new CustomAlreadyExistsException("La Direction indiquée n'existe pas.").getMessage());
+					log.info("-- Echec de l'enregistrement de Fonction. La Direction indiquée n'existe pas --");
+					return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+				}
+
 			} else {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.ALREADY_REPORTED.value());
@@ -159,15 +173,26 @@ public class DepartementController {
 	public ResponseEntity<Response> editEntity(@RequestBody DepartementDto entityDto, @PathVariable("id") Long id) {
 		try {
 			Response response = new Response();
+
 			if (this.service.findById(id).isPresent()) {
-				entityDto = this.service.updateEntity(entityDto, id);
-				response.setTimestamp(new Date());
-				response.setCode(HttpStatus.OK.value());
-				response.setStatus(HttpStatus.OK.name());
-				response.setMessage("Traitement effectué avec succès!");
-				response.setData(entityDto);
-				log.info("-- Modification de Departement effectuée avec succès --");
-				return new ResponseEntity<>(response, HttpStatus.OK);
+				if (this.directionService.getById(entityDto.getIdDirection()).isPresent()) {
+					entityDto = this.service.updateEntity(entityDto, id);
+					response.setTimestamp(new Date());
+					response.setCode(HttpStatus.OK.value());
+					response.setStatus(HttpStatus.OK.name());
+					response.setMessage("Traitement effectué avec succès!");
+					response.setData(entityDto);
+					log.info("-- Modification de Departement effectuée avec succès --");
+					return new ResponseEntity<>(response, HttpStatus.OK);
+				} else {
+					response.setTimestamp(new Date());
+					response.setCode(HttpStatus.NOT_FOUND.value());
+					response.setStatus(HttpStatus.NOT_FOUND.name());
+					response.setMessage(
+							new CustomAlreadyExistsException("La Direction indiquée n'existe pas.").getMessage());
+					log.info("-- Echec de l'enregistrement de Fonction. La Direction indiquée n'existe pas --");
+					return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+				}
 			} else {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.NOT_FOUND.value());
