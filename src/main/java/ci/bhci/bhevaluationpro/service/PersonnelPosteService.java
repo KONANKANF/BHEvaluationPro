@@ -1,5 +1,6 @@
 package ci.bhci.bhevaluationpro.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import ci.bhci.bhevaluationpro.domain.PersonnelPoste;
@@ -12,12 +13,12 @@ import ci.bhci.bhevaluationpro.domain.PersonnelPoste;
  */
 public interface PersonnelPosteService extends AbstractBaseService<PersonnelPoste, Long> {
 
-	List<PersonnelPoste> findByDirection(Long directionId);
+	List<PersonnelPoste> findByDirection(Long directionId) throws SQLException;
 
-	List<PersonnelPoste> findByDepartement(Long departementeId);
+	List<PersonnelPoste> findByDepartement(Long departementeId) throws SQLException;
 
-	List<PersonnelPoste> findByPersonnel(Long personnelId);
+	List<PersonnelPoste> findByPersonnel(Long personnelId) throws SQLException;
 
-	boolean existPersonnelPoste(Long personnelId, Long fonctionId);
+	boolean existPersonnelPoste(Long personnelId, Long fonctionId) throws SQLException;
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import ci.bhci.bhevaluationpro.domain.Departement;
 import ci.bhci.bhevaluationpro.domain.Fonction;
 
 /**
@@ -42,4 +43,11 @@ public interface FonctionRepository extends AbstractBaseRepository<Fonction, Lon
 
 	@Query("select f from Fonction f where id_direction = :directionId and isactive= 1 and is_deleted is null")
 	List<Fonction> findByDirection(@Param("directionId") Long directionId);
+	
+	@Query("select f from Fonction f where id_direction = :directionId and id_service = :departementId and manager_id_fonction = :managerIdFonction and isactive = 1 and is_deleted is null")
+	Optional<Fonction> getByDirection(@Param("directionId") Long directionId, @Param("departementId") Long departementId,
+			@Param("managerIdFonction") Long managerIdFonction);
+
+	@Query("select f from Fonction f where id_service = :departementId and id_fonction = :IdFonction and isactive = 1 and is_deleted is null")
+	Optional<Departement> getByDepartement(@Param("departementId") Long departementId, @Param("IdFonction") Long IdFonction);
 }

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import ci.bhci.bhevaluationpro.domain.Departement;
 import ci.bhci.bhevaluationpro.domain.Fonction;
 import ci.bhci.bhevaluationpro.domain.dto.FonctionDto;
 
@@ -30,5 +31,9 @@ public interface FonctionService extends AbstractBaseService<Fonction, Long> {
 	FonctionDto updateEntity(FonctionDto entityDto, Long id) throws SQLException;
 
 	void delete(FonctionDto entityDto, Long id) throws SQLException;
+
+	Optional<Fonction> getByDirection(Long idDirection, Long idDepartement, Long managerIdFonction) throws SQLException;
+
+	Optional<Departement> getByDepartement(Long idDepartement, Long idFonction) throws SQLException;;
 
 }

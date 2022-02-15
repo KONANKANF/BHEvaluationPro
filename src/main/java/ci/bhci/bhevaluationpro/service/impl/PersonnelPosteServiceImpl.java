@@ -1,5 +1,6 @@
 package ci.bhci.bhevaluationpro.service.impl;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -39,7 +40,7 @@ public class PersonnelPosteServiceImpl extends AbstractBaseRepositoryImpl<Person
 	}
 
 	@Override
-	public List<PersonnelPoste> findByDirection(Long directionId) {
+	public List<PersonnelPoste> findByDirection(Long directionId) throws SQLException {
 		List<PersonnelPoste> personnelPosteList = new ArrayList<>();
 		List<Fonction> fonctions = this.fonctionRepository.findByDirection(directionId);
 		if (fonctions.size() > 0) {
@@ -57,7 +58,7 @@ public class PersonnelPosteServiceImpl extends AbstractBaseRepositoryImpl<Person
 	}
 
 	@Override
-	public List<PersonnelPoste> findByDepartement(Long departementeId) {
+	public List<PersonnelPoste> findByDepartement(Long departementeId) throws SQLException {
 		List<PersonnelPoste> personnelPosteList = new ArrayList<PersonnelPoste>();
 		List<Fonction> fonctions = this.fonctionRepository.findByDepartement(departementeId);
 		if (fonctions.size() > 0) {
@@ -74,17 +75,17 @@ public class PersonnelPosteServiceImpl extends AbstractBaseRepositoryImpl<Person
 	}
 
 	@Override
-	public void delete(PersonnelPoste personnelPoste) {
+	public void delete(PersonnelPoste personnelPoste) throws SQLException {
 		this.repository.save(personnelPoste);
 	}
 
 	@Override
-	public List<PersonnelPoste> findByPersonnel(Long personnelId) {
+	public List<PersonnelPoste> findByPersonnel(Long personnelId) throws SQLException {
 		return this.repository.findByPersonnel(personnelId);
 	}
 
 	@Override
-	public boolean existPersonnelPoste(Long personnelId, Long fonctionId) {
+	public boolean existPersonnelPoste(Long personnelId, Long fonctionId) throws SQLException {
 		return this.repository.existPersonnelPoste(personnelId, fonctionId);
 	}
 }

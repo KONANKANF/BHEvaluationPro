@@ -1,5 +1,6 @@
 package ci.bhci.bhevaluationpro.controller;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import ci.bhci.bhevaluationpro.domain.dto.DirectionDto;
 import ci.bhci.bhevaluationpro.exception.CustomAlreadyExistsException;
 import ci.bhci.bhevaluationpro.exception.CustomDataNotFoundException;
 import ci.bhci.bhevaluationpro.exception.CustomErrorException;
+import ci.bhci.bhevaluationpro.service.DepartementService;
 import ci.bhci.bhevaluationpro.service.DirectionService;
 import ci.bhci.bhevaluationpro.transformer.Transformer;
 import ci.bhci.bhevaluationpro.util.ApiPaths;
@@ -41,13 +43,16 @@ import lombok.extern.log4j.Log4j2;
 public class DirectionController {
 
 	private final DirectionService service;
-	
+	private final DepartementService departementService;
+
 	private final Transformer<DirectionDto, Direction> transformer = new Transformer<DirectionDto, Direction>(
 			DirectionDto.class, Direction.class);
+	private boolean isExiste = true;
 
 	@Autowired
-	public DirectionController(DirectionService service) {
+	public DirectionController(DirectionService service, DepartementService departementService) {
 		this.service = service;
+		this.departementService = departementService;
 	}
 
 	/**
@@ -94,7 +99,7 @@ public class DirectionController {
 	public ResponseEntity<Response> getById(@PathVariable(value = "id", required = true) Long id) {
 		log.info("Initializing DirectionService : getById");
 		try {
-			Response response = new Response();		
+			Response response = new Response();
 			Optional<Direction> foundEntity = this.service.getById(id);
 			if (!foundEntity.isPresent()) {
 				response.setTimestamp(new Date());
@@ -130,7 +135,25 @@ public class DirectionController {
 		log.info("Initializing DirectionService : addEntity");
 		try {
 			Response response = new Response();
+			isExiste = true;
 			if (!this.service.existDirection(entityDto.getCodeDirection(), entityDto.getLibelleDirection())) {
+				if (entityDto.getDepartementDto().size() > 0) {
+					entityDto.getDepartementDto().stream().forEach(element -> {
+						if (element.getIdDirection() != null ) {
+							isExiste = false;
+							return;
+						}
+					});
+					if (!isExiste) {
+						response.setTimestamp(new Date());
+						response.setCode(HttpStatus.CONFLICT.value());
+						response.setStatus(HttpStatus.CONFLICT.name());
+						response.setMessage(new CustomAlreadyExistsException(
+								"L'entité Direction renseigné au niveau de PersonnelPoste n'est pas cohérente.").getMessage());
+						log.warn("-- Données de PersonnelPoste ne sont pas correctes --");
+						return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+					}
+				}
 				entityDto = this.service.addEntity(entityDto);
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());
@@ -139,7 +162,7 @@ public class DirectionController {
 				response.setData(entityDto);
 				log.info("-- Enregistrement de Direction effectué avec succès  --");
 				return new ResponseEntity<>(response, HttpStatus.OK);
-			} else {				
+			} else {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.ALREADY_REPORTED.value());
 				response.setStatus(HttpStatus.ALREADY_REPORTED.name());
@@ -159,7 +182,34 @@ public class DirectionController {
 	public ResponseEntity<Response> editEntity(@RequestBody DirectionDto entityDto, @PathVariable("id") Long id) {
 		try {
 			Response response = new Response();
-			if (this.service.findById(id).isPresent()) {
+			isExiste = true;
+			if (entityDto.getId().equals(id) && this.service.findById(id).isPresent()) {
+				if (entityDto.getDepartementDto().size() > 0) {
+					entityDto.getDepartementDto().stream().forEach(element -> {
+						try {
+							if ((element.getId() != null && (!this.departementService.findById(element.getId())
+									.isPresent()
+									|| !this.departementService.getByDirection(id, element.getId()).isPresent())
+									|| (element.getIdDirection() != null && !element.getIdDirection().equals(id)))) {
+								isExiste = false;
+								return;
+							}
+						} catch (SQLException e) {
+							log.error("Error -> " + e.getMessage());
+							throw new CustomErrorException(HttpStatus.INTERNAL_SERVER_ERROR,
+									"Error -> " + e.getMessage());
+						}
+					});
+					if (!isExiste) {
+						response.setTimestamp(new Date());
+						response.setCode(HttpStatus.NOT_FOUND.value());
+						response.setStatus(HttpStatus.NOT_FOUND.name());
+						response.setMessage(new CustomAlreadyExistsException(
+								"Un ou plusieurs enregistrements PersonnelPoste non trouvé(s).").getMessage());
+						log.warn("-- Enregistrement PersonnelPoste n'existe pas --");
+						return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+					}
+				}
 				entityDto = this.service.updateEntity(entityDto, id);
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());

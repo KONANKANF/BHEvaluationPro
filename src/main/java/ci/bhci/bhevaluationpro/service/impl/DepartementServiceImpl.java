@@ -209,4 +209,17 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 	public List<Departement> findByDirection(Long directionId) throws SQLException {
 		return null;
 	}
+
+	@Override
+	public Optional<Departement> getByDirection(Long directionId, Long departementId) throws SQLException {
+		log.info("-- Find entity Departement by Id : Begin --");
+		try {
+			log.info("-- Entity Departement Id : " + directionId + " found successfully --");
+			return this.repository.getByDirection(directionId, departementId);
+		} catch (Exception e) {
+			log.error("SQLErreur -> " + e.getMessage());
+			throw new CustomErrorException(e.getMessage());
+		}
+		
+	}
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import ci.bhci.bhevaluationpro.domain.Departement;
 import ci.bhci.bhevaluationpro.domain.dto.DepartementDto;
+import ci.bhci.bhevaluationpro.domain.dto.FonctionDto;
 
 /**
  * Service interface for the Departement entity that extends the AbstractBaseService
@@ -27,5 +28,7 @@ public interface DepartementService extends AbstractBaseService<Departement, Lon
 
 	DepartementDto updateEntity(DepartementDto entityDto, Long id) throws SQLException;
 
-	void delete(DepartementDto entityDto, Long id) throws SQLException; 
+	void delete(DepartementDto entityDto, Long id) throws SQLException;
+
+	Optional<Departement> getByDirection(Long idDirection, Long departementId) throws SQLException; 
 }

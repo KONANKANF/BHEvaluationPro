@@ -1,5 +1,6 @@
 package ci.bhci.bhevaluationpro.controller;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import ci.bhci.bhevaluationpro.exception.CustomDataNotFoundException;
 import ci.bhci.bhevaluationpro.exception.CustomErrorException;
 import ci.bhci.bhevaluationpro.service.DepartementService;
 import ci.bhci.bhevaluationpro.service.DirectionService;
+import ci.bhci.bhevaluationpro.service.FonctionService;
 import ci.bhci.bhevaluationpro.transformer.Transformer;
 import ci.bhci.bhevaluationpro.util.ApiPaths;
 import ci.bhci.bhevaluationpro.util.Response;
@@ -43,14 +45,18 @@ public class DepartementController {
 
 	private final DepartementService service;
 	private final DirectionService directionService;
+	private final FonctionService fonctionService;
 
 	private final Transformer<DepartementDto, Departement> transformer = new Transformer<DepartementDto, Departement>(
 			DepartementDto.class, Departement.class);
+	private boolean isExiste = true;
 
 	@Autowired
-	public DepartementController(DepartementService service, DirectionService directionService) {
+	public DepartementController(DepartementService service, DirectionService directionService,
+			FonctionService fonctionService) {
 		this.service = service;
 		this.directionService = directionService;
+		this.fonctionService = fonctionService;
 	}
 
 	/**
@@ -133,8 +139,30 @@ public class DepartementController {
 		log.info("Initializing DepartementService : addEntity");
 		try {
 			Response response = new Response();
+			isExiste = true;
+			Long idDepartement = entityDto.getIdDirection();
 			if (!this.service.existDepartement(entityDto.getIdDirection(), entityDto.getLibelleDepartement())) {
 				if (this.directionService.getById(entityDto.getIdDirection()).isPresent()) {
+					if (entityDto.getFonctionDto().size() > 0) {
+						entityDto.getFonctionDto().stream().forEach(element -> {
+							if (element.getIdDepartement() != null
+									|| (element.getIdDirection() != null
+											&& !element.getIdDirection().equals(idDepartement))) {
+								isExiste = false;
+								return;
+							}
+						});
+						if (!isExiste) {
+							response.setTimestamp(new Date());
+							response.setCode(HttpStatus.CONFLICT.value());
+							response.setStatus(HttpStatus.CONFLICT.name());
+							response.setMessage(new CustomAlreadyExistsException(
+									"L'entité Departement renseigné au niveau de Fonction n'est pas cohérente.")
+											.getMessage());
+							log.warn("-- Données de Fonction ne sont pas correctes --");
+							return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+						}
+					}
 					entityDto = this.service.addEntity(entityDto);
 					response.setTimestamp(new Date());
 					response.setCode(HttpStatus.OK.value());
@@ -173,26 +201,46 @@ public class DepartementController {
 	public ResponseEntity<Response> editEntity(@RequestBody DepartementDto entityDto, @PathVariable("id") Long id) {
 		try {
 			Response response = new Response();
-
-			if (this.service.findById(id).isPresent()) {
-				if (this.directionService.getById(entityDto.getIdDirection()).isPresent()) {
-					entityDto = this.service.updateEntity(entityDto, id);
-					response.setTimestamp(new Date());
-					response.setCode(HttpStatus.OK.value());
-					response.setStatus(HttpStatus.OK.name());
-					response.setMessage("Traitement effectué avec succès!");
-					response.setData(entityDto);
-					log.info("-- Modification de Departement effectuée avec succès --");
-					return new ResponseEntity<>(response, HttpStatus.OK);
-				} else {
-					response.setTimestamp(new Date());
-					response.setCode(HttpStatus.NOT_FOUND.value());
-					response.setStatus(HttpStatus.NOT_FOUND.name());
-					response.setMessage(
-							new CustomAlreadyExistsException("La Direction indiquée n'existe pas.").getMessage());
-					log.info("-- Echec de l'enregistrement de Fonction. La Direction indiquée n'existe pas --");
-					return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			isExiste = true;
+			Long idDepartement = entityDto.getIdDirection();
+			if (entityDto.getId().equals(id) && this.service.getById(id).isPresent()
+					&& this.directionService.getById(idDepartement).isPresent()) {
+				if (entityDto.getFonctionDto().size() > 0) {
+					entityDto.getFonctionDto().stream().forEach(element -> {
+						try {
+							if ((element.getId() != null
+									&& (!this.fonctionService.findById(element.getId()).isPresent())
+									|| !this.service.getByDirection(element.getIdDirection(), id).isPresent())
+									|| (element.getIdDirection() != null
+											&& !element.getIdDirection().equals(idDepartement))
+									|| (element.getIdDepartement() != null && !element.getIdDepartement().equals(id))) {
+								isExiste = false;
+								return;
+							}
+						} catch (SQLException e) {
+							log.error("Error -> " + e.getMessage());
+							throw new CustomErrorException(HttpStatus.INTERNAL_SERVER_ERROR,
+									"Error -> " + e.getMessage());
+						}
+					});
+					if (!isExiste) {
+						response.setTimestamp(new Date());
+						response.setCode(HttpStatus.NOT_FOUND.value());
+						response.setStatus(HttpStatus.NOT_FOUND.name());
+						response.setMessage(new CustomAlreadyExistsException(
+								"Un ou plusieurs enregistrements Fonction non trouvé(s).").getMessage());
+						log.warn("-- Enregistrement Fonction n'existe pas --");
+						return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+					}
 				}
+				entityDto = this.service.updateEntity(entityDto, id);
+				response.setTimestamp(new Date());
+				response.setCode(HttpStatus.OK.value());
+				response.setStatus(HttpStatus.OK.name());
+				response.setMessage("Traitement effectué avec succès!");
+				response.setData(entityDto);
+				log.info("-- Modification de Departement effectuée avec succès --");
+				return new ResponseEntity<>(response, HttpStatus.OK);
 			} else {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.NOT_FOUND.value());
@@ -201,7 +249,23 @@ public class DepartementController {
 						new CustomDataNotFoundException("Auncune Departement ID :" + id + " trouvée !").getMessage());
 				log.warn("Auncune Departement ID :" + id + " trouvée !");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+//					response.setTimestamp(new Date());
+//					response.setCode(HttpStatus.NOT_FOUND.value());
+//					response.setStatus(HttpStatus.NOT_FOUND.name());
+//					response.setMessage(
+//							new CustomAlreadyExistsException("La Direction indiquée n'existe pas.").getMessage());
+//					log.info("-- Echec de l'enregistrement de Fonction. La Direction indiquée n'existe pas --");
+//					return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
+//			} else {
+//				response.setTimestamp(new Date());
+//				response.setCode(HttpStatus.NOT_FOUND.value());
+//				response.setStatus(HttpStatus.NOT_FOUND.name());
+//				response.setMessage(
+//						new CustomDataNotFoundException("Auncune Departement ID :" + id + " trouvée !").getMessage());
+//				log.warn("Auncune Departement ID :" + id + " trouvée !");
+//				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+//			}
 
 		} catch (Exception e) {
 			log.error("Error -> " + e.getMessage());

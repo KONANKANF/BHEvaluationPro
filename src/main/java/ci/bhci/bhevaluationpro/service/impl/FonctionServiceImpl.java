@@ -54,7 +54,8 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 
 	@Autowired
 	public FonctionServiceImpl(FonctionRepository repository, DirectionRepository directionRepository,
-			PersonnelRepository personnelRepository, DepartementRepository departementRepository, PersonnelPosteRepository personnelPosteRepository) {
+			PersonnelRepository personnelRepository, DepartementRepository departementRepository,
+			PersonnelPosteRepository personnelPosteRepository) {
 		super(repository);
 		this.repository = repository;
 		this.directionRepository = directionRepository;
@@ -80,13 +81,13 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 //	}
 
 	@Override
-	public List<Fonction> findByDirection(Long directionId) throws SQLException{
+	public List<Fonction> findByDirection(Long directionId) throws SQLException {
 		return this.repository.findByDirection(directionId);
 	}
- 
+
 	@Override
-	public List<Fonction> findByDepartement(Long departementId) throws SQLException{
-		return this.repository.findByDepartement(departementId) ;
+	public List<Fonction> findByDepartement(Long departementId) throws SQLException {
+		return this.repository.findByDepartement(departementId);
 	}
 
 	@Override
@@ -129,21 +130,27 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 			Optional<Fonction> managerEntity = this.repository.findById(entityDto.getManagerIdFonction());
 			Fonction entity = this.transformer.convertToEntity(entityDto);
 			if (entityDto.getPersonnelPosteDto().size() > 0) {
-				
+
 				entityDto.getPersonnelPosteDto().stream().forEach(element -> {
 					Optional<Personnel> personnelEntity = this.personnelRepository.findById(element.getIdPersonnel());
 					PersonnelPoste childEntity = this.personnelPosteTransformer.convertToEntity(element);
-					if(personnelEntity.isPresent()) childEntity.setPersonnel(personnelEntity.get());
+					if (personnelEntity.isPresent()) {
+						childEntity.setPersonnel(personnelEntity.get());
+					}
 					childEntity.setFonction(entity);
 					children.add(childEntity);
 				});
-				
+
 				entity.setPersonnelPostes(children);
 				log.info("-- Entities PersonnelPoste added --");
 			}
 			entity.setDirection(parent);
-			if(parentDep.isPresent()) entity.setDepartement(parentDep.get());
-			if(managerEntity.isPresent()) entity.setManagerIdFonction(managerEntity.get());
+			if (parentDep.isPresent()) {
+				entity.setDepartement(parentDep.get());
+			}
+			if (managerEntity.isPresent()) {
+				entity.setManagerIdFonction(managerEntity.get());
+			}
 			Fonction newEntity = this.repository.save(entity);
 			log.info("-- Add entity Fonction : End successfully --");
 			return this.transformer.convertToDto(newEntity);
@@ -164,8 +171,8 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 			Fonction entity = this.transformer.convertToEntity(entityDto);
 			if (entityDto.getPersonnelPosteDto().size() > 0) {
 				entityDto.getPersonnelPosteDto().stream().forEach(element -> {
-					if (!this.personnelPosteRepository.findById(element.getId()).isPresent()) {
-						Optional<Personnel> personnelEntity = this.personnelRepository.findById(element.getIdPersonnel());
+					Optional<Personnel> personnelEntity = this.personnelRepository.findById(element.getIdPersonnel());
+					if (element.getId() != null) {
 						PersonnelPoste childEntity = new PersonnelPoste();
 						childEntity.setCreatedAt(LocalDateTime.now());
 						childEntity.setCreatedBy(entityDto.getModifiedBy());
@@ -179,27 +186,28 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 						entity.addFonction(childEntity);
 						log.info("-- New entity PersonnelPoste added --");
 					} else {
-							Optional<Personnel> personnelEntity = this.personnelRepository.findById(element.getIdPersonnel());
-							PersonnelPoste childEntity = this.personnelPosteTransformer.convertToEntity(element);
-							childEntity.setModifiedAt(LocalDateTime.now());
-							childEntity.setModifiedBy(entityDto.getModifiedBy());
-							childEntity.setDebutPoste(null);
-							childEntity.setFinPoste(null);
-							childEntity.setIsActive(element.getIsActive());
-							childEntity.setFonction(entity);
-							if (personnelEntity.isPresent()) {
-								childEntity.setPersonnel(personnelEntity.get());
-							}
-							log.info("-- Entity PersonnelPoste updated --");
+						PersonnelPoste childEntity = this.personnelPosteTransformer.convertToEntity(element);
+						childEntity.setModifiedAt(LocalDateTime.now());
+						childEntity.setModifiedBy(entityDto.getModifiedBy());
+						childEntity.setDebutPoste(null);
+						childEntity.setFinPoste(null);
+						childEntity.setIsActive(element.getIsActive());
+						childEntity.setFonction(entity);
+						if (personnelEntity.isPresent()) {
+							childEntity.setPersonnel(personnelEntity.get());
+						}
+						log.info("-- Entity PersonnelPoste updated --");
 					}
 				});
 			}
 			entity.setModifiedAt(LocalDateTime.now());
-			entity.setModifiedBy(entityDto.getModifiedBy());			
+			entity.setModifiedBy(entityDto.getModifiedBy());
 			entity.setDirection(parent);
 			entity.setIsActive(entityDto.getIsActive());
-			if(parentDep.isPresent()) entity.setDepartement(parentDep.get());
-			if(managerEntity.isPresent()) entity.setManagerIdFonction(managerEntity.get());
+			if (parentDep.isPresent())
+				entity.setDepartement(parentDep.get());
+			if (managerEntity.isPresent())
+				entity.setManagerIdFonction(managerEntity.get());
 			entity.setLibelleFonction(entityDto.getLibelleFonction());
 			Fonction editedEntity = this.repository.save(entity);
 			log.info("-- Update entity Fonction : End successfully --");
@@ -216,6 +224,30 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 	public void delete(FonctionDto entityDto, Long id) throws SQLException {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public Optional<Fonction> getByDirection(Long idDirection, Long idDepartement, Long managerIdFonction) throws SQLException {
+		log.info("-- Find entity Fonction by Id : Begin --");
+		try {
+			log.info("-- Entity Fonction Id : " + managerIdFonction + " found successfully --");
+			return this.repository.getByDirection(idDirection, idDepartement, managerIdFonction);
+		} catch (Exception e) {
+			log.error("SQLErreur -> " + e.getMessage());
+			throw new CustomErrorException(e.getMessage());
+		}
+	}
+
+	@Override
+	public Optional<Departement> getByDepartement(Long idDepartement, Long idFonction) throws SQLException {
+		log.info("-- Find entity Fonction by Id : Begin --");
+		try {
+			log.info("-- Entity Fonction Id : " + idDepartement + " found successfully --");
+			return this.repository.getByDepartement(idDepartement, idFonction);
+		} catch (Exception e) {
+			log.error("SQLErreur -> " + e.getMessage());
+			throw new CustomErrorException(e.getMessage());
+		}
 	}
 
 }

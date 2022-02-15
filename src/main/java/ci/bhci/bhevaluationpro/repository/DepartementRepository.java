@@ -33,4 +33,7 @@ public interface DepartementRepository extends AbstractBaseRepository<Departemen
 
 	@Query("select d from Departement d where id_direction = :directionId and isactive = 1 and is_deleted is null")
 	List<Departement> findByDirection(@Param("directionId") Long directionId);
+	
+	@Query("select d from Departement d where id_direction = :directionId and id_service = :departementId and isactive = 1 and is_deleted is null")
+	Optional<Departement> getByDirection(@Param("directionId") Long directionId, @Param("departementId") Long departementId); 
 }
