@@ -185,12 +185,14 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 			Departement entity = this.findById(entityDto.getId()).orElse(null);
 			if (entity != null) {
 				entity.getFonctions().stream().forEach(element -> {
-					Fonction childEntity = this.fonctionRepository.findById(element.getId()).get();
+					Fonction childEntity = this.fonctionRepository.findById(element.getId()).orElse(null);
+					if(childEntity != null) {
 					childEntity.setIsDeleted(true);
 					childEntity.setDeletedAt(LocalDateTime.now());
 					childEntity.setDeletedBy(entityDto.getDeletedBy());
 					childEntity.setIsActive(false);
 					log.info("-- Entity Fonction deleted --");
+					}
 				});
 				entity.setIsDeleted(true);
 				entity.setDeletedAt(LocalDateTime.now());

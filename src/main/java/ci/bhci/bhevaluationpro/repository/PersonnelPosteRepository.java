@@ -20,8 +20,8 @@ import ci.bhci.bhevaluationpro.domain.PersonnelPoste;
 @Repository
 public interface PersonnelPosteRepository extends AbstractBaseRepository<PersonnelPoste, Long> {
 
-	@Query("select t from PersonnelPoste t where id_personnel_poste = :personelPosteId and isactive = 1 and is_deleted is null")
-	Optional<PersonnelPoste> findById(@Param("personelPosteId") Long fonctionId);
+	@Query("select p from PersonnelPoste p where id_personnel_poste = :personelPosteId and isactive = 1 and is_deleted is null")
+	Optional<PersonnelPoste> findById(@Param("personelPosteId") Long personelPosteId);
 
 	@Query("select p from PersonnelPoste p where isactive = 1 and is_deleted is null")
 	List<PersonnelPoste> findAll();

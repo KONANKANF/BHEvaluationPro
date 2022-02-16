@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import ci.bhci.bhevaluationpro.domain.Departement;
 import ci.bhci.bhevaluationpro.domain.dto.DepartementDto;
-import ci.bhci.bhevaluationpro.domain.dto.FonctionDto;
 
 /**
  * Service interface for the Departement entity that extends the AbstractBaseService

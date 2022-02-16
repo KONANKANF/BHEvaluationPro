@@ -168,16 +168,17 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 			Direction parent = this.directionRepository.getById(entityDto.getIdDirection());
 			Optional<Departement> parentDep = this.departementRepository.findById(entityDto.getIdDepartement());
 			Optional<Fonction> managerEntity = this.repository.findById(entityDto.getManagerIdFonction());
-			Fonction entity = this.transformer.convertToEntity(entityDto);
+			Fonction entity = this.repository.findById(id).orElse(null);
+
 			if (entityDto.getPersonnelPosteDto().size() > 0) {
 				entityDto.getPersonnelPosteDto().stream().forEach(element -> {
 					Optional<Personnel> personnelEntity = this.personnelRepository.findById(element.getIdPersonnel());
-					if (element.getId() != null) {
+					if (element.getId() == null) {
 						PersonnelPoste childEntity = new PersonnelPoste();
 						childEntity.setCreatedAt(LocalDateTime.now());
 						childEntity.setCreatedBy(entityDto.getModifiedBy());
-						childEntity.setDebutPoste(null);
-						childEntity.setFinPoste(null);
+						childEntity.setDebutPoste(element.getDebutPoste());
+						childEntity.setFinPoste(element.getFinPoste());
 						childEntity.setIsActive(element.getIsActive());
 						childEntity.setFonction(entity);
 						if (personnelEntity.isPresent()) {
@@ -186,11 +187,11 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 						entity.addFonction(childEntity);
 						log.info("-- New entity PersonnelPoste added --");
 					} else {
-						PersonnelPoste childEntity = this.personnelPosteTransformer.convertToEntity(element);
+						PersonnelPoste childEntity = this.personnelPosteRepository.getById(element.getId());
 						childEntity.setModifiedAt(LocalDateTime.now());
 						childEntity.setModifiedBy(entityDto.getModifiedBy());
-						childEntity.setDebutPoste(null);
-						childEntity.setFinPoste(null);
+						childEntity.setDebutPoste(element.getDebutPoste());
+						childEntity.setFinPoste(element.getFinPoste());
 						childEntity.setIsActive(element.getIsActive());
 						childEntity.setFonction(entity);
 						if (personnelEntity.isPresent()) {
@@ -204,10 +205,12 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 			entity.setModifiedBy(entityDto.getModifiedBy());
 			entity.setDirection(parent);
 			entity.setIsActive(entityDto.getIsActive());
-			if (parentDep.isPresent())
+			if (parentDep.isPresent()) {
 				entity.setDepartement(parentDep.get());
-			if (managerEntity.isPresent())
+			}
+			if (managerEntity.isPresent()) {
 				entity.setManagerIdFonction(managerEntity.get());
+			}
 			entity.setLibelleFonction(entityDto.getLibelleFonction());
 			Fonction editedEntity = this.repository.save(entity);
 			log.info("-- Update entity Fonction : End successfully --");
@@ -222,12 +225,36 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 	@Override
 	@Transactional
 	public void delete(FonctionDto entityDto, Long id) throws SQLException {
-		// TODO Auto-generated method stub
-
+		log.info("-- Delete entity Fonction : Begin --");
+		try {
+			Fonction entity = this.findById(entityDto.getId()).orElse(null);
+			if (entity != null) {
+				entity.getPersonnelPostes().stream().forEach(element -> {
+					PersonnelPoste childEntity = this.personnelPosteRepository.findById(element.getId()).orElse(null);
+					if(childEntity != null) {
+					childEntity.setIsDeleted(true);
+					childEntity.setDeletedAt(LocalDateTime.now());
+					childEntity.setDeletedBy(entityDto.getDeletedBy());
+					childEntity.setIsActive(false);
+					log.info("-- Entity Fonction deleted --");
+					}					
+				});
+				entity.setIsDeleted(true);
+				entity.setDeletedAt(LocalDateTime.now());
+				entity.setDeletedBy(entityDto.getDeletedBy());
+				entity.setIsActive(false);
+				this.repository.save(entity);
+				log.info("-- Delete entity Fonction : End successfully --");
+			}
+		} catch (SQLException e) {
+			log.error("SQLErreur -> " + e.getMessage());
+			throw new CustomErrorException(e.getMessage());
+		}
 	}
 
 	@Override
-	public Optional<Fonction> getByDirection(Long idDirection, Long idDepartement, Long managerIdFonction) throws SQLException {
+	public Optional<Fonction> getByDirection(Long idDirection, Long idDepartement, Long managerIdFonction)
+			throws SQLException {
 		log.info("-- Find entity Fonction by Id : Begin --");
 		try {
 			log.info("-- Entity Fonction Id : " + managerIdFonction + " found successfully --");
@@ -244,6 +271,46 @@ public class FonctionServiceImpl extends AbstractBaseRepositoryImpl<Fonction, Lo
 		try {
 			log.info("-- Entity Fonction Id : " + idDepartement + " found successfully --");
 			return this.repository.getByDepartement(idDepartement, idFonction);
+		} catch (Exception e) {
+			log.error("SQLErreur -> " + e.getMessage());
+			throw new CustomErrorException(e.getMessage());
+		}
+	}
+
+	@Override
+	public boolean existFonction1(Long idDirection, Long managerIdFonction, String libelleFonction)
+			throws SQLException {
+		return this.repository.existFonction1(idDirection, managerIdFonction, libelleFonction);
+	}
+
+	@Override
+	public boolean existFonction2(Long idDirection, Long idDepartement, String libelleFonction) throws SQLException {
+		return this.repository.existFonction2(idDirection, idDepartement, libelleFonction);
+	}
+
+	@Override
+	public boolean existFonction3(Long idDirection, String libelleFonction) throws SQLException {
+		return this.repository.existFonction3(idDirection, libelleFonction);
+	}
+
+	@Override
+	public Optional<Fonction> getByDirectionAndDepartement(Long idDirection, Long idDepartement) {
+		log.info("-- Find entity Fonction by Id : Begin --");
+		try {
+			log.info("-- Entity Fonction found successfully --");
+			return this.repository.getByDirectionAndDepartement(idDepartement, idDepartement);
+		} catch (Exception e) {
+			log.error("SQLErreur -> " + e.getMessage());
+			throw new CustomErrorException(e.getMessage());
+		}
+	}
+
+	@Override
+	public boolean isManager(Long idFonction, Long managerIdFonction) {
+		log.info("-- Find entity Fonction by Id : Begin --");
+		try {
+			log.info("-- Entity Fonction found successfully --");
+			return this.repository.isManager(idFonction, managerIdFonction);
 		} catch (Exception e) {
 			log.error("SQLErreur -> " + e.getMessage());
 			throw new CustomErrorException(e.getMessage());

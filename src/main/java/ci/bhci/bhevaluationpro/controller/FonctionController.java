@@ -26,6 +26,7 @@ import ci.bhci.bhevaluationpro.service.DepartementService;
 import ci.bhci.bhevaluationpro.service.DirectionService;
 import ci.bhci.bhevaluationpro.service.FonctionService;
 import ci.bhci.bhevaluationpro.service.PersonnelPosteService;
+import ci.bhci.bhevaluationpro.service.PersonnelService;
 import ci.bhci.bhevaluationpro.transformer.Transformer;
 import ci.bhci.bhevaluationpro.util.ApiPaths;
 import ci.bhci.bhevaluationpro.util.Response;
@@ -47,19 +48,22 @@ public class FonctionController {
 	private final FonctionService service;
 	private final DirectionService directionService;
 	private final DepartementService departementService;
+	private final PersonnelService personnelService;
 	private final PersonnelPosteService personnelPosteService;
 
-	private boolean isExiste = false; // Variable booléenne initialisée à vrai
+	private boolean isExiste = true; // Variable booléenne initialisée à vrai
 
 	private final Transformer<FonctionDto, Fonction> transformer = new Transformer<FonctionDto, Fonction>(
 			FonctionDto.class, Fonction.class);
 
 	@Autowired
 	public FonctionController(FonctionService service, DirectionService directionService,
-			DepartementService departementService, PersonnelPosteService personnelPosteService) {
+			DepartementService departementService, PersonnelPosteService personnelPosteService,
+			PersonnelService personnelService) {
 		this.service = service;
 		this.directionService = directionService;
 		this.departementService = departementService;
+		this.personnelService = personnelService;
 		this.personnelPosteService = personnelPosteService;
 	}
 
@@ -146,30 +150,38 @@ public class FonctionController {
 
 		try {
 			Response response = new Response();
-			isExiste = false; // Réinitialisation de la variable à faux
-//			Vérification si enregistrement n'existe pas déjà
-			if (!this.service.existFonction(entityDto.getIdDirection(), entityDto.getIdDepartement(),
-					entityDto.getManagerIdFonction(), entityDto.getLibelleFonction())) {
+			isExiste = true; // Réinitialisation de la variable à faux
+//			Vérification si un enregistrement n'existe pas déjà avec les memes informations
+			Long idDirection = entityDto.getIdDirection();
+			Long idDepartement = entityDto.getIdDepartement();
+			Long managerIdFonction = entityDto.getManagerIdFonction();
+//			private Long idDirection = entityDto.getIdDirection();
+			if ((idDepartement != null && managerIdFonction != null
+					&& !this.service.existFonction(idDirection, idDepartement, managerIdFonction,
+							entityDto.getLibelleFonction()))
+					|| (idDepartement == null && !this.service.existFonction1(idDirection, managerIdFonction,
+							entityDto.getLibelleFonction()))
+					|| (managerIdFonction == null
+							&& !this.service.existFonction2(idDirection, idDepartement, entityDto.getLibelleFonction()))
+					|| (idDepartement == null && managerIdFonction == null
+							&& !this.service.existFonction3(idDirection, entityDto.getLibelleFonction()))) {
 //				Vérification si les informations liées à la Direction/Departement/Manager sont cohérentes
-				if (this.directionService.getById(entityDto.getIdDirection()).isPresent()
-						&& ((entityDto.getIdDepartement() == null
-								|| (entityDto.getIdDepartement() != null && this.departementService
-										.getByDirection(entityDto.getIdDirection(), entityDto.getIdDepartement())
-										.isPresent())))
-						&& (entityDto.getManagerIdFonction() == null
-								|| (entityDto.getManagerIdFonction() != null
-										&& this.service
-												.getByDirection(entityDto.getIdDirection(),
-														entityDto.getIdDepartement(), entityDto.getManagerIdFonction())
-												.isPresent()))) {
-//					Vérification si la liste de PersonnelPoste n'est pas vide
+				if (this.directionService.getById(idDirection).isPresent()
+						&& ((idDepartement == null || (idDepartement != null && managerIdFonction == null
+								&& this.departementService.getByDirection(idDirection, idDepartement).isPresent())))
+						&& (managerIdFonction == null || (managerIdFonction != null
+								&& this.service.findById(managerIdFonction).isPresent()))) {
+////					Vérification si la liste de PersonnelPoste n'est pas vide
 					if (entityDto.getPersonnelPosteDto().size() > 0) {
 						entityDto.getPersonnelPosteDto().stream().forEach(element -> {
+							// Vérification si la fonction existe déjà pour le Personnel
 							try {
-//								Vérification si la fonction existe déjà pour le Personnel
-								if (element.getIdFonction() != null && this.personnelPosteService
-										.existPersonnelPoste(element.getIdPersonnel(), element.getIdFonction())) {
-									isExiste = true;
+								if (element.getIdFonction() != null
+										|| (element.getIdPersonnel() == null
+												|| (element.getIdPersonnel() != null && this.personnelService
+														.findById(element.getIdPersonnel()).isPresent()))
+										|| element.getDebutPoste() == null) {
+									isExiste = false;
 									return;
 								}
 							} catch (SQLException e) {
@@ -178,15 +190,14 @@ public class FonctionController {
 										"Error -> " + e.getMessage());
 							}
 						});
-						if (isExiste) {
+						if (!isExiste) {
 							response.setTimestamp(new Date());
-							response.setCode(HttpStatus.ALREADY_REPORTED.value());
-							response.setStatus(HttpStatus.ALREADY_REPORTED.name());
+							response.setCode(HttpStatus.CONFLICT.value());
+							response.setStatus(HttpStatus.CONFLICT.name());
 							response.setMessage(new CustomAlreadyExistsException(
-									"Un enregistrement PersonnelPoste existe déjà avec les mêmes informations.")
-											.getMessage());
-							log.warn("-- Un enregistrement PersonnelPoste existe déjà --");
-							return new ResponseEntity<>(response, HttpStatus.ALREADY_REPORTED);
+									"Les informations de PersonnelPoste ne sont pas correctes.").getMessage());
+							log.warn("-- Informations PersonnelPoste non corretes --");
+							return new ResponseEntity<>(response, HttpStatus.CONFLICT);
 						}
 					}
 					entityDto = this.service.addEntity(entityDto);
@@ -227,26 +238,31 @@ public class FonctionController {
 	public ResponseEntity<Response> editEntity(@RequestBody FonctionDto entityDto, @PathVariable("id") Long id) {
 		try {
 			Response response = new Response();
+			isExiste = true; // Réinitialisation de la variable à faux
+			Long idDirection = entityDto.getIdDirection();
+			Long idDepartement = entityDto.getIdDepartement();
+			Long managerIdFonction = entityDto.getManagerIdFonction();
 //			Vérifiation si une instance Fonction existe pour les informations fournies 
-			if (this.service.findById(id).isPresent() && this.service.findById(entityDto.getId()).isPresent()) {
+			if (entityDto.getId().equals(id) && this.service.findById(id).isPresent()) {
 //				Vérification si les informations liées à la Direction/Departement/Manager sont cohérentes
-				if (this.directionService.getById(entityDto.getIdDirection()).isPresent()
-						&& ((entityDto.getIdDepartement() == null
-								|| (entityDto.getIdDepartement() != null && this.departementService
-										.getByDirection(entityDto.getIdDirection(), entityDto.getIdDepartement())
-										.isPresent())))
-						&& (entityDto.getManagerIdFonction() == null
-								|| (entityDto.getManagerIdFonction() != null
-										&& this.service
-												.getByDirection(entityDto.getIdDirection(),
-														entityDto.getIdDepartement(), entityDto.getManagerIdFonction())
-												.isPresent()))) {
+				if (this.directionService.getById(idDirection).isPresent()
+						&& ((idDepartement == null || (idDepartement != null
+								&& this.departementService.getByDirection(idDirection, idDepartement).isPresent())))
+						&& (managerIdFonction == null
+								|| (managerIdFonction != null && (!this.service.isManager(id, managerIdFonction)
+										&& this.service.findById(managerIdFonction).isPresent())))) {
 //					Vérification si la liste de PersonnelPoste n'est pas vide
 					if (entityDto.getPersonnelPosteDto().size() > 0) {
 						entityDto.getPersonnelPosteDto().stream().forEach(element -> {
 							try {
 //								Vérification si PersonnelPoste existe
-								if (element.getId() != null && !this.personnelPosteService.findById(element.getId()).isPresent() ) {
+								if ((element.getId() != null
+										&& this.personnelPosteService.findById(element.getId()).equals(null))
+										|| !this.service.findById(element.getIdFonction()).isPresent()
+										|| !this.personnelService.findById(element.getIdPersonnel()).isPresent()
+										|| (element.getIdFonction() != null && !element.getIdFonction().equals(id))
+										|| (element.getId() == null && (element.getIdPersonnel() == null && element.getIdFonction() == null
+												&& element.getDebutPoste() == null))) {
 									isExiste = false;
 									return;
 								}
@@ -261,8 +277,7 @@ public class FonctionController {
 							response.setCode(HttpStatus.NOT_FOUND.value());
 							response.setStatus(HttpStatus.NOT_FOUND.name());
 							response.setMessage(new CustomAlreadyExistsException(
-									"Un ou plusieurs enregistrements PersonnelPoste non trouvé(s).")
-											.getMessage());
+									"Un ou plusieurs enregistrements PersonnelPoste non trouvé(s).").getMessage());
 							log.warn("-- Enregistrement PersonnelPoste n'existe pas --");
 							return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 						}
@@ -283,7 +298,7 @@ public class FonctionController {
 							"Les informations (Direction, Departement ou Manager) fournies ne sont pas correctes.")
 									.getMessage());
 					response.setData(entityDto);
-					log.info("-- Echec de l'enregistrement de Fonction. Les données se sont pas correctes --");
+					log.warn("-- Echec de l'enregistrement de Fonction. Les données se sont pas correctes --");
 					return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 				}
 

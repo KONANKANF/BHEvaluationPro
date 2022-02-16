@@ -34,6 +34,16 @@ public interface FonctionService extends AbstractBaseService<Fonction, Long> {
 
 	Optional<Fonction> getByDirection(Long idDirection, Long idDepartement, Long managerIdFonction) throws SQLException;
 
-	Optional<Departement> getByDepartement(Long idDepartement, Long idFonction) throws SQLException;;
+	Optional<Departement> getByDepartement(Long idDepartement, Long idFonction) throws SQLException;
+
+	boolean existFonction1(Long idDirection, Long managerIdFonction, String libelleFonction) throws SQLException;
+
+	boolean existFonction2(Long idDirection, Long idDepartement, String libelleFonction) throws SQLException;
+
+	boolean existFonction3(Long idDirection, String libelleFonction) throws SQLException;
+
+	Optional<Fonction> getByDirectionAndDepartement(Long idDirection, Long idDepartement);
+
+	boolean isManager(Long idFonction, Long managerIdFonction);
 
 }
