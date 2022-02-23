@@ -27,7 +27,7 @@ public interface DepartementService extends AbstractBaseService<Departement, Lon
 
 	DepartementDto updateEntity(DepartementDto entityDto, Long id) throws SQLException;
 
-	void delete(DepartementDto entityDto, Long id) throws SQLException;
+	void deleteEntity(DepartementDto entityDto) throws SQLException;
 
 	Optional<Departement> getByDirection(Long idDirection, Long departementId) throws SQLException; 
 }

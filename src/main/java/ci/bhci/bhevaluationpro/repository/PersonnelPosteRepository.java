@@ -32,6 +32,10 @@ public interface PersonnelPosteRepository extends AbstractBaseRepository<Personn
 	@Query("select p from PersonnelPoste p where id_personnel = :personnelId and isactive = 1 and is_deleted is null")
 	List<PersonnelPoste> findByPersonnel(@Param("personnelId") Long personnelId);
 
+	@Query("select p from PersonnelPoste p where id_personnel = :personnelId and id_fonction = :fonctionId and isactive= 1 and is_deleted is null")
+	List<PersonnelPoste> findByPersonnelAndFonction(@Param("personnelId") Long personnelId,
+			@Param("fonctionId") Long fonctionId);
+
 	@Query("select case when count(p)> 0 then true else false end from PersonnelPoste p where id_personnel = :personnelId and "
 			+ "id_fonction = :fonctionId and isactive= 1 and is_deleted is null")
 	boolean existPersonnelPoste(@Param("personnelId") Long personnelId, @Param("fonctionId") Long fonctionId);

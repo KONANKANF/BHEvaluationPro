@@ -1,8 +1,11 @@
 package ci.bhci.bhevaluationpro.service;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 import ci.bhci.bhevaluationpro.domain.Personnel;
+import ci.bhci.bhevaluationpro.domain.dto.PersonnelDto;
 
 /**
  * Service interface for the Personnel entity that extends the AbstractBaseService
@@ -12,16 +15,27 @@ import ci.bhci.bhevaluationpro.domain.Personnel;
  */
 public interface PersonnelService extends AbstractBaseService<Personnel, Long> {
 
-	List<Personnel> findByDepartement(Long departementeId);
+	List<PersonnelDto> findByDepartement(Long departementeId) throws SQLException;
 
-	List<Personnel> findByDirection(Long directionId);
+	List<PersonnelDto> findByDirection(Long directionId) throws SQLException;
 
-	List<Personnel> findByFonction(Long fonctionId);
+	List<PersonnelDto> findByFonction(Long fonctionId) throws SQLException;
 
-	List<Personnel> findByManager(Long managerIdFonction);
+	List<PersonnelDto> findByManager(Long managerIdFonction) throws SQLException;
 
-	List<Personnel> findByPersonnelPoste(Long personnelPosteId);
+	PersonnelDto findByPersonnelPoste(Long personnelPosteId) throws SQLException;
+	
+	
+	Optional<Personnel> getById(Long id) throws SQLException;
 
-	boolean existPersonnel(String matricule, String email);
+	PersonnelDto addEntity(PersonnelDto entityDto) throws SQLException;
+
+	PersonnelDto updateEntity(PersonnelDto entityDto, Long id) throws SQLException;
+
+	void deleteEntity(PersonnelDto entityDto) throws SQLException;
+
+	boolean existPersonnel(String matricule, String email) throws SQLException;
+
+	List<PersonnelDto> getAll() throws SQLException;
 
 }

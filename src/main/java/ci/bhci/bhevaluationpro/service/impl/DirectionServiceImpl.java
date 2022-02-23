@@ -121,7 +121,7 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 
 	@Override
 	@Transactional
-	public void delete(DirectionDto directionDto, Long id) throws SQLException {
+	public void deleteEntity(DirectionDto directionDto) throws SQLException {
 		log.info("-- Delete entity Direction : Begin --");
 		try {
 			Direction entity = this.findById(directionDto.getId()).orElse(null);

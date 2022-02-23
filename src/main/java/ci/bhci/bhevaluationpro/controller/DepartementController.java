@@ -249,23 +249,7 @@ public class DepartementController {
 						new CustomDataNotFoundException("Auncune Departement ID :" + id + " trouvée !").getMessage());
 				log.warn("Auncune Departement ID :" + id + " trouvée !");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-//					response.setTimestamp(new Date());
-//					response.setCode(HttpStatus.NOT_FOUND.value());
-//					response.setStatus(HttpStatus.NOT_FOUND.name());
-//					response.setMessage(
-//							new CustomAlreadyExistsException("La Direction indiquée n'existe pas.").getMessage());
-//					log.info("-- Echec de l'enregistrement de Fonction. La Direction indiquée n'existe pas --");
-//					return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
-//			} else {
-//				response.setTimestamp(new Date());
-//				response.setCode(HttpStatus.NOT_FOUND.value());
-//				response.setStatus(HttpStatus.NOT_FOUND.name());
-//				response.setMessage(
-//						new CustomDataNotFoundException("Auncune Departement ID :" + id + " trouvée !").getMessage());
-//				log.warn("Auncune Departement ID :" + id + " trouvée !");
-//				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-//			}
 
 		} catch (Exception e) {
 			log.error("Error -> " + e.getMessage());
@@ -278,7 +262,7 @@ public class DepartementController {
 		try {
 			Response response = new Response();
 			if (this.service.findById(id).isPresent()) {
-				this.service.delete(entityDto, id);
+				this.service.deleteEntity(entityDto);
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());
@@ -299,12 +283,4 @@ public class DepartementController {
 			throw new CustomErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Error -> " + e.getMessage());
 		}
 	}
-
-	// PaginationMod<T>: create response object for pagination
-//	@GetMapping("/pagination")
-//	public ResponseEntity<PaginationMod<DirectionDto>> getAllPageable(Pageable pageable){
-//	  PaginationMod<DirectionDto>pages=service.getAllDirections(pageable);
-//	  return ResponseEntity.ok(pages);
-//	}
-
 }

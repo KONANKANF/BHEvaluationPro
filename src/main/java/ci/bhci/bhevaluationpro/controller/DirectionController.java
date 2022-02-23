@@ -238,8 +238,8 @@ public class DirectionController {
 	public ResponseEntity<Response> deleteEntity(@RequestBody DirectionDto entityDto, @PathVariable("id") Long id) {
 		try {
 			Response response = new Response();
-			if (this.service.findById(id).isPresent()) {
-				this.service.delete(entityDto, id);
+			if (this.service.findById(id).isPresent() && entityDto.getId().equals(id)) {
+				this.service.deleteEntity(entityDto);
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());

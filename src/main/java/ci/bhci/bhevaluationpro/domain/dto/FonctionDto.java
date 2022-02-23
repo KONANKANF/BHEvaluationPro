@@ -25,8 +25,5 @@ public class FonctionDto extends AbstractBaseEntityDto {
 	private Long idDirection;
 	private Long idDepartement;
 	private Long managerIdFonction;
-//	private List<FonctionDto> collabotateurDto = new ArrayList<>(); 
 	private List<PersonnelPosteDto> personnelPosteDto = new ArrayList<>();
-//	private Date debutPoste;
-//	private Date finPoste;
 }

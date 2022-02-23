@@ -24,13 +24,13 @@ public interface FonctionService extends AbstractBaseService<Fonction, Long> {
 
 	List<FonctionDto> getAll() throws SQLException;
 
-	Optional<Fonction> getById(Long id) throws SQLException;
+	Optional<Fonction> findById(Long id) throws SQLException;
 
 	FonctionDto addEntity(FonctionDto entityDto) throws SQLException;
 
 	FonctionDto updateEntity(FonctionDto entityDto, Long id) throws SQLException;
 
-	void delete(FonctionDto entityDto, Long id) throws SQLException;
+	void deleteEntity(FonctionDto entityDto) throws SQLException;
 
 	Optional<Fonction> getByDirection(Long idDirection, Long idDepartement, Long managerIdFonction) throws SQLException;
 

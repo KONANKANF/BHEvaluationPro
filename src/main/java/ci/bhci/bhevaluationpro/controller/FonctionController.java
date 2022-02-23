@@ -33,7 +33,7 @@ import ci.bhci.bhevaluationpro.util.Response;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * Controller for the Direction entity
+ * Controller for Fonction services
  * 
  * @author kyao
  * @since 2022-02-03
@@ -112,7 +112,7 @@ public class FonctionController {
 		log.info("Initializing FonctionService : getById");
 		try {
 			Response response = new Response();
-			Optional<Fonction> foundEntity = this.service.getById(id);
+			Optional<Fonction> foundEntity = this.service.findById(id);
 			if (!foundEntity.isPresent()) {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.NOT_FOUND.value());
@@ -155,7 +155,6 @@ public class FonctionController {
 			Long idDirection = entityDto.getIdDirection();
 			Long idDepartement = entityDto.getIdDepartement();
 			Long managerIdFonction = entityDto.getManagerIdFonction();
-//			private Long idDirection = entityDto.getIdDirection();
 			if ((idDepartement != null && managerIdFonction != null
 					&& !this.service.existFonction(idDirection, idDepartement, managerIdFonction,
 							entityDto.getLibelleFonction()))
@@ -174,11 +173,11 @@ public class FonctionController {
 ////					Vérification si la liste de PersonnelPoste n'est pas vide
 					if (entityDto.getPersonnelPosteDto().size() > 0) {
 						entityDto.getPersonnelPosteDto().stream().forEach(element -> {
-							// Vérification si la fonction existe déjà pour le Personnel
+//							Vérification si la fonction existe déjà pour le Personnel
 							try {
 								if (element.getIdFonction() != null
 										|| (element.getIdPersonnel() == null
-												|| (element.getIdPersonnel() != null && this.personnelService
+												|| (element.getIdPersonnel() != null && !this.personnelService
 														.findById(element.getIdPersonnel()).isPresent()))
 										|| element.getDebutPoste() == null) {
 									isExiste = false;
@@ -236,6 +235,7 @@ public class FonctionController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Response> editEntity(@RequestBody FonctionDto entityDto, @PathVariable("id") Long id) {
+		log.info("Initializing FonctionService : updateEntity");
 		try {
 			Response response = new Response();
 			isExiste = true; // Réinitialisation de la variable à faux
@@ -261,8 +261,9 @@ public class FonctionController {
 										|| !this.service.findById(element.getIdFonction()).isPresent()
 										|| !this.personnelService.findById(element.getIdPersonnel()).isPresent()
 										|| (element.getIdFonction() != null && !element.getIdFonction().equals(id))
-										|| (element.getId() == null && (element.getIdPersonnel() == null && element.getIdFonction() == null
-												&& element.getDebutPoste() == null))) {
+										|| (element.getId() == null
+												&& (element.getIdPersonnel() == null && element.getIdFonction() == null
+														&& element.getDebutPoste() == null))) {
 									isExiste = false;
 									return;
 								}
@@ -322,8 +323,8 @@ public class FonctionController {
 	public ResponseEntity<Response> deleteEntity(@RequestBody FonctionDto entityDto, @PathVariable("id") Long id) {
 		try {
 			Response response = new Response();
-			if (this.service.findById(id).isPresent()) {
-				this.service.delete(entityDto, id);
+			if (this.service.findById(id).isPresent() && entityDto.getId().equals(id)) {
+				this.service.deleteEntity(entityDto);
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());
@@ -344,12 +345,4 @@ public class FonctionController {
 			throw new CustomErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Error -> " + e.getMessage());
 		}
 	}
-
-	// PaginationMod<T>: create response object for pagination
-//	@GetMapping("/pagination")
-//	public ResponseEntity<PaginationMod<DirectionDto>> getAllPageable(Pageable pageable){
-//	  PaginationMod<DirectionDto>pages=service.getAllDirections(pageable);
-//	  return ResponseEntity.ok(pages);
-//	}
-
 }

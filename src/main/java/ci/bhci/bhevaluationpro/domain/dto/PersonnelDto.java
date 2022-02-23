@@ -23,11 +23,12 @@ import lombok.Setter;
 public class PersonnelDto extends AbstractBaseEntityDto {
 
 	private Long id;
-	private String matricule;
-	private String civilite;
-	private String nomPrenoms;
-	private String email;
-	private String photo;
+	private String matriculePersonnel;
+	private String civilitePersonnel;
+	private String nomPersonnel;
+	private String prenomsPersonnel;
+	private String emailPersonnel;
+	private String photoPersonnel;
 	private Date dateNaissance;
 	private Date dateEmbauche;
 	private List<PersonnelPosteDto> personnelPosteDto = new ArrayList<>();

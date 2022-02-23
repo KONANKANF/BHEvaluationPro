@@ -179,7 +179,7 @@ public class DepartementServiceImpl extends AbstractBaseRepositoryImpl<Departeme
 
 	@Override
 	@Transactional
-	public void delete(DepartementDto entityDto, Long id) throws SQLException {
+	public void deleteEntity(DepartementDto entityDto) throws SQLException {
 		log.info("-- Delete entity Departement : Begin --");
 		try {
 			Departement entity = this.findById(entityDto.getId()).orElse(null);
