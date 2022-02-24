@@ -61,8 +61,9 @@ public class PersonnelServiceImpl extends AbstractBaseRepositoryImpl<Personnel, 
 	public List<PersonnelDto> getAll() throws SQLException {
 		log.info("-- Get all entities Personnel : Begin --");
 		try {
+			List<PersonnelDto> personnelList = this.transformer.convertToDto(this.repository.findAll());
 			log.info("-- All entities Personnel get successfully --");
-			return this.transformer.convertToDto(this.repository.findAll());
+			return this.setPersonnelPoste(personnelList);
 		} catch (Exception e) {
 			log.error("SQLErreur -> " + e.getMessage());
 			throw new CustomErrorException(e.getMessage());
@@ -105,7 +106,7 @@ public class PersonnelServiceImpl extends AbstractBaseRepositoryImpl<Personnel, 
 				personnelList.addAll(personnelFound);
 			});
 		}
-		return personnelList;
+		return this.setPersonnelPoste(personnelList);
 	}
 
 	@Override
@@ -131,7 +132,7 @@ public class PersonnelServiceImpl extends AbstractBaseRepositoryImpl<Personnel, 
 				personnelList.addAll(personnelFound);
 			});
 		}
-		return personnelList;
+		return this.setPersonnelPoste(personnelList);
 	}
 
 	@Override
@@ -148,7 +149,7 @@ public class PersonnelServiceImpl extends AbstractBaseRepositoryImpl<Personnel, 
 				personnelList.addAll(personnelFound);
 			});
 		}
-		return personnelList;
+		return this.setPersonnelPoste(personnelList);
 	}
 
 	@Override
@@ -173,7 +174,7 @@ public class PersonnelServiceImpl extends AbstractBaseRepositoryImpl<Personnel, 
 				personnelList.addAll(personnelFound);
 			});
 		}
-		return personnelList;
+		return this.setPersonnelPoste(personnelList);
 	}
 
 	@Override
@@ -186,6 +187,16 @@ public class PersonnelServiceImpl extends AbstractBaseRepositoryImpl<Personnel, 
 			personnelDto.setPersonnelPosteDto(this.transformerPersonnelPoste.convertToDto(personnelPostes));
 		}
 		return personnelDto;
+	}
+	
+	private List<PersonnelDto> setPersonnelPoste(List<PersonnelDto> personnelDtos){
+		List<PersonnelDto> personnels = new ArrayList<PersonnelDto>();
+		personnelDtos.stream().forEach(personnel ->{
+			List<PersonnelPoste> personnelPostes = this.personnelPosteRepository.findByPersonnel(personnel.getId());
+			personnel.setPersonnelPosteDto(this.transformerPersonnelPoste.convertToDto(personnelPostes));
+			personnels.add(personnel);
+		});
+		return personnels;
 	}
 
 	@Override

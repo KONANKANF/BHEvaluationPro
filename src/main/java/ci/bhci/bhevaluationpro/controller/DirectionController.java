@@ -37,7 +37,6 @@ import lombok.extern.log4j.Log4j2;
  */
 
 @RestController
-//@CrossOrigin
 @RequestMapping(ApiPaths.Entity.BPA_DIRECTION)
 @Log4j2
 public class DirectionController {

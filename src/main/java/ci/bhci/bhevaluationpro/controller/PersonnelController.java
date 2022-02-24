@@ -352,12 +352,12 @@ public class PersonnelController {
 				}
 				entityDto = this.service.addEntity(entityDto);
 				response.setTimestamp(new Date());
-				response.setCode(HttpStatus.OK.value());
-				response.setStatus(HttpStatus.OK.name());
+				response.setCode(HttpStatus.CREATED.value());
+				response.setStatus(HttpStatus.CREATED.name());
 				response.setMessage("Opération effectuée avec succès!");
 				response.setData(entityDto);
 				log.info("-- Enregistrement de Personnel effectué avec succès --");
-				return new ResponseEntity<>(response, HttpStatus.OK);
+				return new ResponseEntity<>(response, HttpStatus.CREATED);
 			} else {
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.ALREADY_REPORTED.value());

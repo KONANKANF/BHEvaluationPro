@@ -36,9 +36,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class PersonnelPosteController {
 	private final PersonnelPosteService service;
-	private final FonctionService fonctionService;
-	private final PersonnelService personnelService;
-
 	private boolean isExiste = true; // Variable booléenne initialisée à vrai
 
 	private final Transformer<PersonnelPosteDto, PersonnelPoste> transformer = new Transformer<PersonnelPosteDto, PersonnelPoste>(
@@ -49,8 +46,6 @@ public class PersonnelPosteController {
 			DepartementService departementService, PersonnelService personnelService,
 			FonctionService fonctionService) {
 		this.service = service;
-		this.fonctionService = fonctionService;
-		this.personnelService = personnelService;
 	}
 
 	/**
