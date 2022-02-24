@@ -277,7 +277,7 @@ public class PersonnelController {
 	 * @param id
 	 * @return PersonnelDto{@code ResponseEntity}
 	 */
-	@GetMapping("/personnelposte/{id}")
+	@GetMapping("/personnelposte/find/{id}")
 	public ResponseEntity<Response> getByPersonnelPoste(@PathVariable(value = "id", required = true) Long id) {
 		log.info("Initializing PersonnelService : getById");
 		try {
@@ -314,7 +314,7 @@ public class PersonnelController {
 	 * @return
 	 * @return {@code ResponseEntity}
 	 */
-	@PostMapping
+	@PostMapping("/add")
 	public ResponseEntity<Response> addEntity(@RequestBody PersonnelDto entityDto) throws Exception {
 		log.info("Initializing PersonnelService : addEntity");
 		try {
@@ -373,14 +373,15 @@ public class PersonnelController {
 		}
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<Response> editEntity(@RequestBody PersonnelDto entityDto, @PathVariable("id") Long id) {
+	@PutMapping("/update")
+	public ResponseEntity<Response> editEntity(@RequestBody PersonnelDto entityDto) {
 		log.info("Initializing PersonnelService : updateEntity");
 		try {
 			Response response = new Response();
 			isExiste = true; // Réinitialisation de la variable à faux
+			Long id = entityDto.getId();
 //			Vérifiation si une instance Fonction existe pour les informations fournies 
-			if (entityDto.getId().equals(id) && this.service.findById(id).isPresent()) {
+			if (this.service.findById(id).isPresent()) {
 //					Vérification si la liste de PersonnelPoste n'est pas vide
 				if (entityDto.getPersonnelPosteDto().size() > 0) {
 					entityDto.getPersonnelPosteDto().stream().forEach(element -> {
@@ -416,7 +417,7 @@ public class PersonnelController {
 						return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 					}
 				}
-				entityDto = this.service.updateEntity(entityDto, id);
+				entityDto = this.service.updateEntity(entityDto);
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());
@@ -440,11 +441,12 @@ public class PersonnelController {
 		}
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Response> deleteEntity(@RequestBody PersonnelDto entityDto, @PathVariable("id") Long id) {
+	@PutMapping("/delete")
+	public ResponseEntity<Response> deleteEntity(@RequestBody PersonnelDto entityDto) {
 		try {
 			Response response = new Response();
-			if (this.service.findById(id).isPresent() && entityDto.getId().equals(id)) {
+			Long id = entityDto.getId();
+			if (this.service.findById(id).isPresent()) {
 				this.service.deleteEntity(entityDto);
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());

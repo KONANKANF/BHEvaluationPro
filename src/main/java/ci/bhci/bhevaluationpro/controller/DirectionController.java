@@ -59,7 +59,7 @@ public class DirectionController {
 	 * 
 	 * @return {@code ResponseEntity}
 	 */
-	@GetMapping
+	@GetMapping("/all")
 	public ResponseEntity<Response> getDirections() {
 		log.info("Initializing DirectionService : getDirections");
 		try {
@@ -94,7 +94,7 @@ public class DirectionController {
 	 * @param id
 	 * @return DirectionDto{@code ResponseEntity}
 	 */
-	@GetMapping("/{id}")
+	@GetMapping("/find/{id}")
 	public ResponseEntity<Response> getById(@PathVariable(value = "id", required = true) Long id) {
 		log.info("Initializing DirectionService : getById");
 		try {
@@ -129,7 +129,7 @@ public class DirectionController {
 	 * @param entityDto
 	 * @return {@code ResponseEntity}
 	 */
-	@PostMapping
+	@PostMapping("/add")
 	public ResponseEntity<Response> addEntity(@RequestBody DirectionDto entityDto) {
 		log.info("Initializing DirectionService : addEntity");
 		try {
@@ -138,7 +138,7 @@ public class DirectionController {
 			if (!this.service.existDirection(entityDto.getCodeDirection(), entityDto.getLibelleDirection())) {
 				if (entityDto.getDepartementDto().size() > 0) {
 					entityDto.getDepartementDto().stream().forEach(element -> {
-						if (element.getIdDirection() != null ) {
+						if (element.getIdDirection() != null) {
 							isExiste = false;
 							return;
 						}
@@ -148,7 +148,8 @@ public class DirectionController {
 						response.setCode(HttpStatus.CONFLICT.value());
 						response.setStatus(HttpStatus.CONFLICT.name());
 						response.setMessage(new CustomAlreadyExistsException(
-								"L'entité Direction renseigné au niveau de PersonnelPoste n'est pas cohérente.").getMessage());
+								"L'entité Direction renseigné au niveau de PersonnelPoste n'est pas cohérente.")
+										.getMessage());
 						log.warn("-- Données de PersonnelPoste ne sont pas correctes --");
 						return new ResponseEntity<>(response, HttpStatus.CONFLICT);
 					}
@@ -177,18 +178,19 @@ public class DirectionController {
 		}
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<Response> editEntity(@RequestBody DirectionDto entityDto, @PathVariable("id") Long id) {
+	@PutMapping("/edit")
+	public ResponseEntity<Response> editEntity(@RequestBody DirectionDto entityDto) {
 		try {
 			Response response = new Response();
 			isExiste = true;
-			if (entityDto.getId().equals(id) && this.service.findById(id).isPresent()) {
+			final Long id = entityDto.getId();
+			if (this.service.findById(id).isPresent()) {
 				if (entityDto.getDepartementDto().size() > 0) {
 					entityDto.getDepartementDto().stream().forEach(element -> {
 						try {
-							if ((element.getId() != null && (!this.departementService.findById(element.getId())
-									.isPresent()
-									|| !this.departementService.getByDirection(id, element.getId()).isPresent())
+							if ((element.getId() != null
+									&& (!this.departementService.findById(element.getId()).isPresent()
+											|| !this.departementService.getByDirection(id, element.getId()).isPresent())
 									|| (element.getIdDirection() != null && !element.getIdDirection().equals(id)))) {
 								isExiste = false;
 								return;
@@ -209,7 +211,7 @@ public class DirectionController {
 						return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 					}
 				}
-				entityDto = this.service.updateEntity(entityDto, id);
+				entityDto = this.service.updateEntity(entityDto);
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());
 				response.setStatus(HttpStatus.OK.name());
@@ -233,11 +235,12 @@ public class DirectionController {
 		}
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Response> deleteEntity(@RequestBody DirectionDto entityDto, @PathVariable("id") Long id) {
+	@PutMapping("/delete")
+	public ResponseEntity<Response> deleteEntity(@RequestBody DirectionDto entityDto) {
 		try {
 			Response response = new Response();
-			if (this.service.findById(id).isPresent() && entityDto.getId().equals(id)) {
+			final Long id = entityDto.getId();
+			if (this.service.findById(id).isPresent()) {
 				this.service.deleteEntity(entityDto);
 				response.setTimestamp(new Date());
 				response.setCode(HttpStatus.OK.value());
@@ -251,7 +254,7 @@ public class DirectionController {
 				response.setStatus(HttpStatus.NOT_FOUND.name());
 				response.setMessage(
 						new CustomDataNotFoundException("Auncune Direction ID :" + id + " trouvée !").getMessage());
-				log.warn("Auncune Direction ID :" + entityDto.getId() + " trouvée !");
+				log.warn("Auncune Direction ID :" + id + " trouvée !");
 				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 			}
 
@@ -260,12 +263,4 @@ public class DirectionController {
 			throw new CustomErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Error -> " + e.getMessage());
 		}
 	}
-
-	// PaginationMod<T>: create response object for pagination
-//	@GetMapping("/pagination")
-//	public ResponseEntity<PaginationMod<DirectionDto>> getAllPageable(Pageable pageable){
-//	  PaginationMod<DirectionDto>pages=service.getAllDirections(pageable);
-//	  return ResponseEntity.ok(pages);
-//	}
-
 }

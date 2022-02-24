@@ -30,7 +30,7 @@ public interface PersonnelService extends AbstractBaseService<Personnel, Long> {
 
 	PersonnelDto addEntity(PersonnelDto entityDto) throws SQLException;
 
-	PersonnelDto updateEntity(PersonnelDto entityDto, Long id) throws SQLException;
+	PersonnelDto updateEntity(PersonnelDto entityDto) throws SQLException;
 
 	void deleteEntity(PersonnelDto entityDto) throws SQLException;
 

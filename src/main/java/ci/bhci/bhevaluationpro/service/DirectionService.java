@@ -23,7 +23,7 @@ public interface DirectionService extends AbstractBaseService<Direction, Long> {
 
 	DirectionDto addEntity(DirectionDto entityDto) throws SQLException;
 
-	DirectionDto updateEntity(DirectionDto entityDto, Long id) throws SQLException;
+	DirectionDto updateEntity(DirectionDto entityDto) throws SQLException;
 
 	void deleteEntity(DirectionDto directionDto) throws SQLException;
 

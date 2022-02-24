@@ -236,10 +236,10 @@ public class PersonnelServiceImpl extends AbstractBaseRepositoryImpl<Personnel, 
 	}
 
 	@Override
-	public PersonnelDto updateEntity(PersonnelDto entityDto, Long id) throws SQLException {
+	public PersonnelDto updateEntity(PersonnelDto entityDto) throws SQLException {
 		log.info("-- Update entity Personnel : Begin --");
 		try {
-			Personnel entity = this.repository.findById(id).orElse(null);
+			Personnel entity = this.repository.findById(entityDto.getId()).orElse(null);
 			if (entityDto.getPersonnelPosteDto().size() > 0) {
 				entityDto.getPersonnelPosteDto().stream().forEach(element -> {
 					Optional<Fonction> fonctionEntity = this.fonctionRepository.findById(element.getIdPersonnel());

@@ -77,13 +77,13 @@ public class DirectionServiceImpl extends AbstractBaseRepositoryImpl<Direction, 
 
 	@Override
 	@Transactional
-	public DirectionDto updateEntity(DirectionDto directionDto, Long id) throws SQLException {
+	public DirectionDto updateEntity(DirectionDto directionDto) throws SQLException {
 		log.info("-- Update entity Direction : Begin --");
 		try {
 			Direction entity = this.findById(directionDto.getId()).orElse(null);
 			if (directionDto.getDepartementDto().size() > 0) {
 				directionDto.getDepartementDto().stream().forEach(departementDto -> {
-					if (!this.departementRepository.existDepartement(id, departementDto.getLibelleDepartement())) {
+					if (!this.departementRepository.existDepartement(directionDto.getId(), departementDto.getLibelleDepartement())) {
 						Departement childEntity = new Departement();
 						childEntity.setCreatedAt(LocalDateTime.now());
 						childEntity.setCreatedBy(directionDto.getModifiedBy());
